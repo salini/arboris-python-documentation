@@ -1,0 +1,8 @@
+<map id="inheritancea8a4e304b8" name="inheritancea8a4e304b8">
+<area shape="rect" id="node1" href="#arboris.constraints.BallAndSocketConstraint" title="Create a ball and socket joint constraint between two frames." alt="" coords="329,3,545,21"/>
+<area shape="rect" id="node2" href="modules.html#arboris.core.Constraint" title="A generic class for kinematic constraint." alt="" coords="175,38,295,57"/>
+<area shape="rect" id="node3" href="#arboris.constraints.JointLimits" title="This class describes and solves joint limits constraints." alt="" coords="362,38,512,57"/>
+<area shape="rect" id="node4" href="#arboris.constraints.PointContact" title="Parent class for all point contacts." alt="" coords="356,74,518,92"/>
+<area shape="rect" id="node5" href="#arboris.constraints.SoftFingerContact" title="This class implements a *soft&#45;finger* point contact constraint." alt="" coords="580,74,764,92"/>
+<area shape="rect" id="node6" href="modules.html#arboris.core.NamedObject" title="A class for anything named to depend from." alt="" coords="4,38,140,57"/>
+</map>

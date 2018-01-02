@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simulation loop &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Computation of the dynamical model" href="dynamicalmodel.html" />
+    <link rel="prev" title="Rigid Mechanisms" href="rigidmechanism.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dynamicalmodel.html" title="Computation of the dynamical model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rigidmechanism.html" title="Rigid Mechanisms"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="simulation-loop">
+<h1>Simulation loop<a class="headerlink" href="#simulation-loop" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>A simulation can be ran using the <a class="reference internal" href="modules.html#arboris.core.simulate" title="arboris.core.simulate"><tt class="xref py py-func docutils literal"><span class="pre">arboris.core.simulate()</span></tt></a> function,
+which is indeed very simple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="n">world</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    <span class="n">previous_t</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">previous_t</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">update_dynamic</span><span class="p">()</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">update_controllers</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">update_constraints</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="n">previous_t</span> <span class="o">=</span> <span class="n">t</span>
+</pre></div>
+</div>
+<p>Let&#8217;s detail the various steps.</p>
+</div>
+<div class="section" id="update-dynamic">
+<h2><a class="reference internal" href="modules.html#arboris.core.World.update_dynamic" title="arboris.core.World.update_dynamic"><tt class="xref py py-meth docutils literal"><span class="pre">update_dynamic()</span></tt></a><a class="headerlink" href="#update-dynamic" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="modules.html#arboris.core.World.update_dynamic" title="arboris.core.World.update_dynamic"><tt class="xref py py-meth docutils literal"><span class="pre">update_dynamic()</span></tt></a> method computes the
+matrices of the world model in generalized coordinates. We&#8217;ll denote
+respectively <img class="math" src="_images/math/de9779baa3bc51337ec7faa734ef1d70ec23767e.png" alt="M"/>, <img class="math" src="_images/math/86fd6bffe531e0c8a227b753ab804bdd9af8b329.png" alt="B"/> and <img class="math" src="_images/math/cf5191c791a7e5961ca555d5b77c55db0f219110.png" alt="N"/> the mass, viscosity and non-linear effects
+matrices.</p>
+<p>At this step, the world &#8220;unactuated&#8221; model is</p>
+<div class="math">
+<p><img src="_images/math/1a5305ba989c3d9fbc44cb4ab83d62288c35811d.png" alt="M(t) \dGVel(t+dt) + \left( N(t) + B(t) \right) \GVel(t+dt) = 0,"/></p>
+</div><p>where <img class="math" src="_images/math/b52f5ac6b258bab8511300377e79ef133128f6bd.png" alt="\GVel"/> is the generalized velocity vector and <img class="math" src="_images/math/a4905837d4df5172edc384582ffd94f2acd5b734.png" alt="\dGVel"/> its time
+derivative.</p>
+<p>Note that there is no contact, actuation or even gravity involved yet.</p>
+</div>
+<div class="section" id="update-controllers">
+<h2><a class="reference internal" href="modules.html#arboris.core.World.update_controllers" title="arboris.core.World.update_controllers"><tt class="xref py py-meth docutils literal"><span class="pre">update_controllers()</span></tt></a><a class="headerlink" href="#update-controllers" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="modules.html#arboris.core.World.update_controllers" title="arboris.core.World.update_controllers"><tt class="xref py py-meth docutils literal"><span class="pre">update_controllers()</span></tt></a> method completes the
+model with &#8220;actuation&#8221; forces provided by the controllers. Actuation is
+here taken in a broaden meaning and may actually include weight (from
+<a class="reference internal" href="controllers.html#arboris.controllers.WeightController" title="arboris.controllers.WeightController"><tt class="xref py py-class docutils literal"><span class="pre">arboris.controllers.WeightController</span></tt></a>).</p>
+<p>Considering the following integration scheme</p>
+<div class="math">
+<p><img src="_images/math/2cb6db75060c58e70ff21314f2592e7e1a985ada.png" alt="\dGVel(t+dt) = \frac{\GVel(t+dt) - \GVel(t)}{dt}"/></p>
+</div><p>we get this first order free model</p>
+<div class="math">
+<p><img src="_images/math/66905b63a58e3232dfd896402df225d5a1fc1c0f.png" alt="\left( \frac{M(t)}{dt} + N(t) + B(t) \right) \GVel(t+dt) &amp;=
+\frac{M(t)}{dt} \GVel(t)"/></p>
+</div><p>which is then completed by the controllers first-order actuation force:</p>
+<div class="math">
+<p><img src="_images/math/fdac19f33ede44fb8e400f060415c977d6aced6c.png" alt="\GForce_a(t) &amp;= \GForce_{0a}(t) + Z_a(t) \GVel(t+dt)"/></p>
+</div><p>It is the responsability of each controller to provide both <img class="math" src="_images/math/042021032f4a46acd2037dc6911ce5cd6f565144.png" alt="\GForce_{0a}"/> and
+<img class="math" src="_images/math/eb2c9d6dd7a98e471a8d69ca86ca49808373aea1.png" alt="Z_a(t)"/> when its <a class="reference internal" href="modules.html#arboris.core.Controller.update" title="arboris.core.Controller.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> method is called by
+<a class="reference internal" href="modules.html#arboris.core.World.update_controllers" title="arboris.core.World.update_controllers"><tt class="xref py py-meth docutils literal"><span class="pre">update_controllers()</span></tt></a>.</p>
+<p>The actuated model is then</p>
+<div class="math">
+<p><img src="_images/math/3c6c36183627a9ecc6ffbfd21f3d1a213d938865.png" alt="\left( \frac{M(t)}{dt} + N(t) + B(t) - \sum_a Z_a(t) \right)
+\GVel(t+dt) &amp;=
+\frac{M(t)}{dt} \GVel(t) + \sum_a \GForce_{0a}(t)"/></p>
+</div><p>Introducing the world impedance <img class="math" src="_images/math/c639b659e89adfb57e54ad527fe595c1f1dba349.png" alt="Z"/> and admittance <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/>.</p>
+<div class="math">
+<p><img src="_images/math/407c42a79ddb478c980d0fe38e3ce6beca516bdc.png" alt="Z(t) &amp;= \frac{M(t)}{dt} + N(t) + B(t)- \sum_a Z_a(t) \\
+Y(t) &amp;= Z^{-1}(t)"/></p>
+</div><p>leads to a more compact expression:</p>
+<div class="math">
+<p><img src="_images/math/fd7b5bdfb4d48dc7120a258fcbcef125b1ed0c02.png" alt="\GVel(t+dt)
+&amp;= Y(t) \left( \frac{M(t)}{dt} \GVel(t) + \sum_a \GForce_{0a}(t) \right)"/></p>
+</div><p>The role of the <a class="reference internal" href="modules.html#arboris.core.World.update_controllers" title="arboris.core.World.update_controllers"><tt class="xref py py-meth docutils literal"><span class="pre">update_controllers()</span></tt></a> method
+is to compute <img class="math" src="_images/math/c639b659e89adfb57e54ad527fe595c1f1dba349.png" alt="Z"/>, <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/> and <img class="math" src="_images/math/c28c8305a6ac491fe9bf5204abbf77459e9cfc51.png" alt="\sum_a \GForce_{0a}"/> and to save them
+respectively in the world <tt class="xref py py-attr docutils literal"><span class="pre">_impedance</span></tt>,
+<tt class="xref py py-attr docutils literal"><span class="pre">_admittance</span></tt> and
+<tt class="xref py py-attr docutils literal"><span class="pre">_gforce</span></tt> properties.</p>
+</div>
+<div class="section" id="update-constraints">
+<h2><a class="reference internal" href="modules.html#arboris.core.World.update_constraints" title="arboris.core.World.update_constraints"><tt class="xref py py-meth docutils literal"><span class="pre">update_constraints()</span></tt></a><a class="headerlink" href="#update-constraints" title="Permalink to this headline">¶</a></h2>
+<p>Additionnal constraints such as contacts or kinematic loops are handled by
+the <a class="reference internal" href="modules.html#arboris.core.World.update_constraints" title="arboris.core.World.update_constraints"><tt class="xref py py-meth docutils literal"><span class="pre">update_constraints()</span></tt></a> method which solves
+them iteratively using a Gauss-Seidel algorithm. It results in a constant
+generalized force <img class="math" src="_images/math/28db249c3e10369897697eee586dc803d84ead7d.png" alt="\GForce_{c}"/> for each constraint which is added to
+the actuation ones in the world <tt class="xref py py-attr docutils literal"><span class="pre">_gforce</span></tt> property.</p>
+<p>The resulting model is:</p>
+<div class="math">
+<p><img src="_images/math/c0dfb3f4ab0ad4149c8973300d4a55ba62c09a4a.png" alt="\GVel(t+dt) &amp;= Y(t)
+\left(
+    \frac{M(t)}{dt} \GVel(t)
+    + \sum_a \GForce_{0a}(t)
+    + \sum_c \GForce_{c}(t)
+\right)"/></p>
+</div></div>
+<div class="section" id="integrate">
+<h2><a class="reference internal" href="modules.html#arboris.core.World.integrate" title="arboris.core.World.integrate"><tt class="xref py py-meth docutils literal"><span class="pre">integrate()</span></tt></a><a class="headerlink" href="#integrate" title="Permalink to this headline">¶</a></h2>
+<p>From the previous equation, this method computes <img class="math" src="_images/math/79cab6d4fe774389ccc9281edbdc3e2aa312ee0f.png" alt="\GVel(t+dt)"/> and then
+calls each joint <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/> <a class="reference internal" href="modules.html#arboris.core.Joint.integrate" title="arboris.core.Joint.integrate"><tt class="xref py py-meth docutils literal"><span class="pre">integrate()</span></tt></a> method which
+updates the joint generalized position <img class="math" src="_images/math/8bc5dc3d88da4cee0421ef2c7eaeec518f72410f.png" alt="\GPos_j(t+dt)"/>.</p>
+<p>That&#8217;s it, the world state (generalized positions and velocities) has
+been updated to <img class="math" src="_images/math/a46535d8533c5b6b3119a3055df4dbabb6b2865d.png" alt="t+dt"/> and all the model matricies are now outdated.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Simulation loop</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#update-dynamic"><tt class="docutils literal"><span class="pre">update_dynamic()</span></tt></a></li>
+<li><a class="reference internal" href="#update-controllers"><tt class="docutils literal"><span class="pre">update_controllers()</span></tt></a></li>
+<li><a class="reference internal" href="#update-constraints"><tt class="docutils literal"><span class="pre">update_constraints()</span></tt></a></li>
+<li><a class="reference internal" href="#integrate"><tt class="docutils literal"><span class="pre">integrate()</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rigidmechanism.html"
+                        title="previous chapter">Rigid Mechanisms</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dynamicalmodel.html"
+                        title="next chapter">Computation of the dynamical model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/simulation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dynamicalmodel.html" title="Computation of the dynamical model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rigidmechanism.html" title="Rigid Mechanisms"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

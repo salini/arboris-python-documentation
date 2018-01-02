@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Rigid Motion &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Rigid Mechanisms" href="rigidmechanism.html" />
+    <link rel="prev" title="Quick start" href="quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rigidmechanism.html" title="Rigid Mechanisms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quick start"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rigid-motion">
+<h1>Rigid Motion<a class="headerlink" href="#rigid-motion" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="frames-and-rigid-bodies">
+<h2>Frames and rigid bodies<a class="headerlink" href="#frames-and-rigid-bodies" title="Permalink to this headline">¶</a></h2>
+<p>A frame <img class="math" src="_images/math/e1dd8f4140e1976513a6b6495c787cd2667efdbc.png" alt="\Frame"/> is <em>an abstract class</em> which defines the position and
+orientation of a particular part of the system.
+The frame class has three concrete subclasses, <a class="reference internal" href="modules.html#arboris.core.Body" title="arboris.core.Body"><tt class="xref py py-class docutils literal"><span class="pre">Body</span></tt></a>,
+<a class="reference internal" href="modules.html#arboris.core.SubFrame" title="arboris.core.SubFrame"><tt class="xref py py-class docutils literal"><span class="pre">SubFrame</span></tt></a> and <a class="reference internal" href="modules.html#arboris.core.MovingSubFrame" title="arboris.core.MovingSubFrame"><tt class="xref py py-class docutils literal"><span class="pre">MovingSubFrame</span></tt></a>.</p>
+<p>The Body class incorporates the inertia and viscosity properties of some
+rigid parts. In a general manner, the inertia matrix is defined as follows</p>
+<div class="math">
+<p><img src="_images/math/3083d16495cfa60a5db2dc79a43b0b5973d42cc3.png" alt="\begin{bmatrix}
+      \In[b]        &amp; m \skew{\vec{r}}   \\
+    m \skew{r}\tp   &amp; m \Id{}
+\end{bmatrix}"/></p>
+</div><p>where <img class="math" src="_images/math/959eba20dba5fdd413c1d0a4b90a5b381f9eeb0c.png" alt="\vec{r}"/> represents the center of mass location relative to <img class="math" src="_images/math/d5a28a80cbbc63e6935bff634aef049fab9dfbaf.png" alt="b"/> the body
+frame <img class="math" src="_images/math/485e3ea953ae8036f46dc97f3e26def2dec9801b.png" alt="\Frame{b}"/>, <img class="math" src="_images/math/67fd7ddcade3bede42529b459a1c963f50cb4e5f.png" alt="\skew{\bullet}"/> is skew-symetric matrix and <img class="math" src="_images/math/510a01cb26f93d9d602d723d72a3e70a8f9cc60f.png" alt="\bullet\tp"/> is
+transposition.
+Bodies can have some subframes to locate some specific locations, as shown in
+the image below where <img class="math" src="_images/math/d5a28a80cbbc63e6935bff634aef049fab9dfbaf.png" alt="b"/> has 2 subframes, <img class="math" src="_images/math/8cae3fb7c7aaa7c5317285dce0cc303a60f13584.png" alt="\Frame{sf1}"/> and <img class="math" src="_images/math/91b0bb7214c5b2e73ef5388dac5c1d67971455df.png" alt="\Frame{sf2}"/>.</p>
+<a class="reference internal image-reference" href="_images/body_alone.svg"><div align="center" class="align-center"><img src="_images/body_alone.svg" width="200px" /></div>
+</a>
+</div>
+<div class="section" id="position-of-a-coordinate-frame">
+<h2>Position of a coordinate frame<a class="headerlink" href="#position-of-a-coordinate-frame" title="Permalink to this headline">¶</a></h2>
+<p>An homogeneous matrix <img class="math" src="_images/math/b578832a9c7fc5ceedc1cdd68da5adbcb33f4ee3.png" alt="\H"/> is a matrix of the form</p>
+<div class="math">
+<p><img src="_images/math/9f91357b806769ed8f37d1b6c7916cc28bbd640b.png" alt="\H =
+\begin{bmatrix}
+    \R       &amp; \pt \\
+    \vec{0}  &amp; 1
+\end{bmatrix}
+\in \Real{4\times4}"/></p>
+</div><p>with <img class="math" src="_images/math/9368a99c851a0c9dfa94bd6b296da014aec5ba15.png" alt="\R^{-1}=\R \tp \quad \in \Real{3\times3}"/> and <img class="math" src="_images/math/f928118a486af76db1ba176153358cfabf10b983.png" alt="\pt \in \Real{3}"/>.</p>
+<p>The <em>pose</em> (position and orientation, also known as the <em>configuration</em>)
+of a (right-handed) coordinate frame <img class="math" src="_images/math/485e3ea953ae8036f46dc97f3e26def2dec9801b.png" alt="\Frame{b}"/> regarding to a reference
+(right-handed) coordinate frame <img class="math" src="_images/math/849d6eee6481724f60866d69462cb36e05149ad7.png" alt="\Frame{a}"/>: can be described by an
+homogeneous matrix</p>
+<div class="math">
+<p><img src="_images/math/bb4971ca9e158686d9059ab203ab38f31f351058.png" alt="\H_{ab} =
+\begin{bmatrix}
+    \R_{ab}  &amp; \pt_{ab} \\
+    \vec{0}  &amp; 1
+\end{bmatrix}"/></p>
+</div><p>with:</p>
+<ul class="simple">
+<li><img class="math" src="_images/math/2e2b68b8cc1402b4ee3067191a4c69f8ca7e06cc.png" alt="\pt_{ab}"/> defined as the <img class="math" src="_images/math/bbe3f36fc17ee19fcef8459a9ac93eceddba0c00.png" alt="3 \times 1"/> column vector of coordinates of
+the origin of <img class="math" src="_images/math/485e3ea953ae8036f46dc97f3e26def2dec9801b.png" alt="\Frame{b}"/> expressed in <img class="math" src="_images/math/849d6eee6481724f60866d69462cb36e05149ad7.png" alt="\Frame{a}"/>.</li>
+<li><img class="math" src="_images/math/09fba51b294de6468a25a4aa723a589760f0e47d.png" alt="\R_{ab}"/> defined as the <img class="math" src="_images/math/1d8002fd84997ff4701a23b452ec7de08ebf92ab.png" alt="3 \times 3"/> matrix with the columns equal to
+the coordinates of the three unit vectors along the frame axes of
+<img class="math" src="_images/math/485e3ea953ae8036f46dc97f3e26def2dec9801b.png" alt="\Frame{b}"/> expressed in <img class="math" src="_images/math/849d6eee6481724f60866d69462cb36e05149ad7.png" alt="\Frame{a}"/>.</li>
+</ul>
+<p>The inverse pose is computed as follows</p>
+<blockquote>
+<div><div class="math">
+<p><img src="_images/math/6b664fa53c8a089e45636dc708700aad41ac725a.png" alt="\H_{ba} = \H_{ab}^{-1} =
+\begin{bmatrix}
+    \R_{ba}     &amp; \pt_{ba} \\
+    \vec{0}     &amp; 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \R_{ab}\tp  &amp; - \R_{ab}\tp \pt_{ab} \\
+    \vec{0}     &amp; 1
+\end{bmatrix}"/></p>
+</div></div></blockquote>
+</div>
+<div class="section" id="velocity-of-a-coordinate-frame">
+<h2>Velocity of a coordinate frame<a class="headerlink" href="#velocity-of-a-coordinate-frame" title="Permalink to this headline">¶</a></h2>
+<p>The velocity of a rigid body can be described by a twist.</p>
+<div class="math">
+<p><img src="_images/math/b01b5d74f28c7d3c93648e5a54f9834b39dc5d2f.png" alt="\twist[c]_{a/b} =
+\begin{bmatrix}
+    \rotvel[c]_{a/b} \\
+    \linvel[c]_{a/b} \\
+\end{bmatrix}"/></p>
+</div><p>The adjoint matrix <img class="math" src="_images/math/45cb6f876dcc338d12534c57b750db56143ddbdf.png" alt="\Ad_{ab}"/> which depends on the homogeneous matrix <img class="math" src="_images/math/d29c9a92228428c743fe08cee6acd8b47711f400.png" alt="\H_{ab}"/>
+describes the twist displacement from <img class="math" src="_images/math/849d6eee6481724f60866d69462cb36e05149ad7.png" alt="\Frame{a}"/> to <img class="math" src="_images/math/485e3ea953ae8036f46dc97f3e26def2dec9801b.png" alt="\Frame{b}"/></p>
+<div class="math">
+<p><img src="_images/math/889df49c4bef27313494f6764b457ee1a3d9dfad.png" alt="\Ad_{cd} =
+\begin{bmatrix}
+    \R_{cd}                   &amp; 0       \\
+    \skew{\pt}_{cd} \R_{cd}   &amp; \R_{cd}
+\end{bmatrix}
+%
+\hspace{100px}
+\twist[c]_{a/b} = \Ad_{cd} \cdot \twist[d]_{a/b}"/></p>
+</div><p>TODO: add adjoint matrix and relative velocities formulas</p>
+</div>
+<div class="section" id="wrenches">
+<h2>Wrenches<a class="headerlink" href="#wrenches" title="Permalink to this headline">¶</a></h2>
+<p>A generalized force acting on a rigid body consist in a linear component
+(pure force) <img class="math" src="_images/math/f10adfbb4ed7b5b5bbeaf75bd670c1d825db964f.png" alt="\linforce"/> and angular component (pure moment) <img class="math" src="_images/math/658852d2a75abb495a9cb6c6c000d6621f5f3771.png" alt="\rotforce"/>.
+The pair force/moment is named a <em>wrench</em> and can be represented using
+a vector in <img class="math" src="_images/math/202e302cb26bd75fbe07ba82a615090d33b41d4b.png" alt="\Real{6}"/>:</p>
+<div class="math">
+<p><img src="_images/math/b8da98c112d812e8a18a207c0898e994d0a4c738.png" alt="\wrench[c] =
+\begin{bmatrix}
+    \rotforce[c] \\
+    \linforce[c] \\
+\end{bmatrix}"/></p>
+</div><p>The displacement of a wrench from a frame to another is done through the use of
+the adjoint matrix</p>
+<blockquote>
+<div><div class="math">
+<p><img src="_images/math/dc3fe776f59c343449311d636e759cd489263eb4.png" alt="\wrench[c] = \Ad_{dc}\tp \cdot \wrench[d]"/></p>
+</div></div></blockquote>
+</div>
+<div class="section" id="acceleration-of-a-coordinate-frame">
+<h2>Acceleration of a coordinate frame<a class="headerlink" href="#acceleration-of-a-coordinate-frame" title="Permalink to this headline">¶</a></h2>
+<p>TODO: introduce adjacency</p>
+</div>
+<div class="section" id="newton-euler-equations-for-a-rigid-body">
+<h2>Newton-Euler equations for a rigid body<a class="headerlink" href="#newton-euler-equations-for-a-rigid-body" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+<p><img src="_images/math/263b9848d994ea7f48c22e4759cdf6bc99c80120.png" alt="\begin{bmatrix}
+    \In[b]    &amp; 0   \\
+    0         &amp; m \Id{}
+\end{bmatrix}
+\begin{bmatrix}
+    {\dot{\rotvel[b]}}_{b/g}(t) \\
+    {\dot{\linvel[b]}}_{b/g}(t)
+\end{bmatrix}
++
+\begin{bmatrix}
+    0 &amp; \rotvel[b]_{b/g}(t) \times \In[b] \\
+    0 &amp; \rotvel[b]_{b/g}(t) \times
+\end{bmatrix}
+\begin{bmatrix}
+    \rotvel[b]_{b/g}(t) \\
+    \linvel[b]_{b/g}(t)
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \rotforce[b](t)\\
+    \linforce[b](t)\\
+\end{bmatrix}"/></p>
+</div><p>where <img class="math" src="_images/math/5efe24def46c2a3c0cde9ba32781f2810a103fe3.png" alt="\In[b]"/> is the body inertial tensor, expressed
+in the body frame, <img class="math" src="_images/math/d5a28a80cbbc63e6935bff634aef049fab9dfbaf.png" alt="b"/></p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>The modules <a class="reference internal" href="modules.html#module-arboris.twistvector" title="arboris.twistvector"><tt class="xref py py-mod docutils literal"><span class="pre">arboris.twistvector</span></tt></a>, <a class="reference internal" href="modules.html#module-arboris.homogeneousmatrix" title="arboris.homogeneousmatrix"><tt class="xref py py-mod docutils literal"><span class="pre">arboris.homogeneousmatrix</span></tt></a> and
+<a class="reference internal" href="modules.html#module-arboris.adjointmatrix" title="arboris.adjointmatrix"><tt class="xref py py-mod docutils literal"><span class="pre">arboris.adjointmatrix</span></tt></a> respectively  implement &#8220;low level&#8221; operations on
+twist and on homogeneous and adjoint matrices.
+For instance, the following excerp creates the homogeneous matrix of a
+translation and then inverts it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">arboris.homogeneousmatrix</span> <span class="kn">as</span> <span class="nn">homogeneousmatrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">homogeneousmatrix</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span>
+<span class="go">array([[ 1.        ,  0.        ,  0.        ,  1.        ],</span>
+<span class="go">       [ 0.        ,  1.        ,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  1.        ,  0.66666667],</span>
+<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hinv</span> <span class="o">=</span> <span class="n">homogeneousmatrix</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hinv</span>
+<span class="go">array([[ 1.        ,  0.        ,  0.        , -1.        ],</span>
+<span class="go">       [ 0.        ,  1.        ,  0.        , -0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  1.        , -0.66666667],</span>
+<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]])</span>
+</pre></div>
+</div>
+<p>A more convenient way of dealing with rigid motion is planned, by using
+a child class of <tt class="xref py py-class docutils literal"><span class="pre">rigidmotion.RigidMotion</span></tt>,  which wraps all the
+elementary functions in an object-oriented way. However, this child
+class does not exist yet, one may use <tt class="xref py py-class docutils literal"><span class="pre">rigidmotion.FreeJoint</span></tt>
+(see next chapter) instead.</p>
+</div>
+<div class="section" id="dynamics">
+<h2>Dynamics<a class="headerlink" href="#dynamics" title="Permalink to this headline">¶</a></h2>
+<p>TODO: document 1st and 2nd order dynamics for a single rigid body.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Rigid Motion</a><ul>
+<li><a class="reference internal" href="#frames-and-rigid-bodies">Frames and rigid bodies</a></li>
+<li><a class="reference internal" href="#position-of-a-coordinate-frame">Position of a coordinate frame</a></li>
+<li><a class="reference internal" href="#velocity-of-a-coordinate-frame">Velocity of a coordinate frame</a></li>
+<li><a class="reference internal" href="#wrenches">Wrenches</a></li>
+<li><a class="reference internal" href="#acceleration-of-a-coordinate-frame">Acceleration of a coordinate frame</a></li>
+<li><a class="reference internal" href="#newton-euler-equations-for-a-rigid-body">Newton-Euler equations for a rigid body</a></li>
+<li><a class="reference internal" href="#implementation">Implementation</a></li>
+<li><a class="reference internal" href="#dynamics">Dynamics</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="previous chapter">Quick start</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="rigidmechanism.html"
+                        title="next chapter">Rigid Mechanisms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rigidmotion.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rigidmechanism.html" title="Rigid Mechanisms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quick start"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quirks &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="prev" title="Development" href="devel.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="devel.html" title="Development"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quirks">
+<h1>Quirks<a class="headerlink" href="#quirks" title="Permalink to this headline">¶</a></h1>
+<p>This pages illustrates a few quirks and gotchas from python, numpy and arboris.</p>
+<div class="section" id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="default-values">
+<h3>Default values<a class="headerlink" href="#default-values" title="Permalink to this headline">¶</a></h3>
+<p>The function argument default values ar&#8217;e evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes. For instance in this example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="k">class</span> <span class="nc">MyJoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gpos</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpos</span> <span class="o">=</span> <span class="n">gpos</span>
+<span class="n">j1</span> <span class="o">=</span> <span class="n">MyJoint</span><span class="p">()</span>
+<span class="n">j2</span> <span class="o">=</span> <span class="n">MyJoint</span><span class="p">()</span>
+<span class="n">j1</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.14</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j2</span><span class="o">.</span><span class="n">gpos</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j1</span><span class="o">.</span><span class="n">gpos</span> <span class="ow">is</span> <span class="n">j2</span><span class="o">.</span><span class="n">gpos</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">gpos</span></tt> is shared by the two instances <tt class="docutils literal"><span class="pre">j1</span></tt> and <tt class="docutils literal"><span class="pre">j2</span></tt>:</p>
+<div class="highlight-none"><div class="highlight"><pre>[ 3.14]
+True
+</pre></div>
+</div>
+<p>A solution is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="k">class</span> <span class="nc">MyJoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gpos</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">gpos</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">gpos</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpos</span> <span class="o">=</span> <span class="n">gpos</span>
+<span class="n">j1</span> <span class="o">=</span> <span class="n">MyJoint</span><span class="p">()</span>
+<span class="n">j2</span> <span class="o">=</span> <span class="n">MyJoint</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j1</span><span class="o">.</span><span class="n">gpos</span> <span class="ow">is</span> <span class="n">j2</span><span class="o">.</span><span class="n">gpos</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none"><div class="highlight"><pre>False
+</pre></div>
+</div>
+</div>
+<div class="section" id="scope-and-nested-functions">
+<h3>Scope and nested functions<a class="headerlink" href="#scope-and-nested-functions" title="Permalink to this headline">¶</a></h3>
+<p>The following example illustrates scoping with nested function definitions:
+a nested function as read access to (all) its parents namespaces, but attempting to write them creates a new local one. Note that python-3 provides read/write access with the <tt class="docutils literal"><span class="pre">nonlocal</span></tt> statement.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">outer</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="s">&#39;a defined in outer&#39;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="s">&#39;b defined in outer&#39;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="s">&#39;c defined in outer&#39;</span>
+    <span class="k">def</span> <span class="nf">middle</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;inner: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">a</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;inner: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">b</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;inner: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="s">&#39;c defined in middle&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;middle: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">a</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;middle: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">b</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;middle: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
+        <span class="c"># middle as read access to outer()&#39;s namespace</span>
+        <span class="n">inner</span><span class="p">()</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="s">&#39;b re-defined in outer&#39;</span>
+    <span class="n">middle</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;outer: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">a</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;outer: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">b</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;outer: {var}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
+<span class="n">outer</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>returns</p>
+<div class="highlight-none"><div class="highlight"><pre>middle: a defined in outer
+middle: b re-defined in outer
+middle: c defined in middle
+inner: a defined in outer
+inner: b re-defined in outer
+inner: c defined in middle
+outer: a defined in outer
+outer: b re-defined in outer
+outer: c defined in outer
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="numpy">
+<h2>Numpy<a class="headerlink" href="#numpy" title="Permalink to this headline">¶</a></h2>
+<p>TODO: illustrate views of arrays</p>
+</div>
+<div class="section" id="arboris">
+<h2>Arboris<a class="headerlink" href="#arboris" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quirks</a><ul>
+<li><a class="reference internal" href="#python">Python</a><ul>
+<li><a class="reference internal" href="#default-values">Default values</a></li>
+<li><a class="reference internal" href="#scope-and-nested-functions">Scope and nested functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#numpy">Numpy</a></li>
+<li><a class="reference internal" href="#arboris">Arboris</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="devel.html"
+                        title="previous chapter">Development</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/quirks.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="devel.html" title="Development"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

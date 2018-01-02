@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Visualization &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Collisions" href="collisions.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="collisions.html" title="Collisions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="visualization">
+<h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
+<p>The visualisation of a simulation is still a work
+in progress. However it is quite useable right now.</p>
+<p>Scene and animation are saved in collada file.
+Furthermore, there are 2 possibilities to visualize the world and the simulation.</p>
+<div class="section" id="save-scene-and-animation-in-a-collada-file">
+<h2>Save scene and animation in a collada file<a class="headerlink" href="#save-scene-and-animation-in-a-collada-file" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="save-world-in-collada-scene">
+<h3>Save world in collada scene<a class="headerlink" href="#save-world-in-collada-scene" title="Permalink to this headline">¶</a></h3>
+<p>You can save the world in a collada file when this one has been completely
+initialized.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.core</span> <span class="kn">import</span> <span class="n">World</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.robots</span> <span class="kn">import</span> <span class="n">simplearm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.visu.dae_writer</span> <span class="kn">import</span> <span class="n">write_collada_scene</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simplearm</span><span class="o">.</span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">write_collada_scene</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Of course, modifications of the world after this command are not taken into
+account in this file.</p>
+<p>The <tt class="docutils literal"><span class="pre">flat</span></tt> argument indicates how you want to save the world structure.
+If <tt class="docutils literal"><span class="pre">False</span></tt>, it keeps the tree structure of the world;
+If <tt class="docutils literal"><span class="pre">True</span></tt>, the structure is flatten, and bodies are considered independent.</p>
+</div>
+<div class="section" id="save-simulation-results-in-collada-animation">
+<h3>Save simulation results in collada animation<a class="headerlink" href="#save-simulation-results-in-collada-animation" title="Permalink to this headline">¶</a></h3>
+<p>First of all, you have to save a collada scene, as described above.
+Then you have to an obsever to save the simulation data. To do so, use the
+<tt class="docutils literal"><span class="pre">PickleLogger</span></tt> or the <tt class="docutils literal"><span class="pre">Hdf5Logger</span></tt>, then simulate</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.observers</span> <span class="kn">import</span> <span class="n">PickleLogger</span><span class="p">,</span> <span class="n">Hdf5Logger</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PickleLogger</span><span class="p">(</span><span class="s">&quot;sim.pkl&quot;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>  <span class="c"># this one</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hdf5Logger</span><span class="p">(</span><span class="s">&quot;sim.h5&quot;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>     <span class="c"># or this one</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">timeline</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Be sure that the <tt class="docutils literal"><span class="pre">flat</span></tt> argument is the same that in the <tt class="docutils literal"><span class="pre">collada_write_scene</span></tt>.
+When the simulation is finished, you can write a collada animation</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.visu.dae_writer</span> <span class="kn">import</span> <span class="n">write_collada_animation</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">write_collada_animation</span><span class="p">(</span><span class="s">&quot;anim_pkl.dae&quot;</span><span class="p">,</span> <span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="s">&quot;sim.pkl&quot;</span><span class="p">)</span> <span class="c"># this one</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">write_collada_animation</span><span class="p">(</span><span class="s">&quot;anim_h5.dae&quot;</span><span class="p">,</span> <span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="s">&quot;sim.h5&quot;</span><span class="p">)</span>   <span class="c"># or this one</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="visualize-with-daenim">
+<h2>Visualize with Daenim<a class="headerlink" href="#visualize-with-daenim" title="Permalink to this headline">¶</a></h2>
+<p>Unlike Vpython, <a class="reference external" href="http://github.com/sbarthelemy/daenim">daenim</a> is not a
+python module.
+It is a C++ program <a class="reference external" href="www.openscenegraph.org">based on OpenSceneGraph</a> that can
+read collada file and can communicate with arboris-python to display
+the running simulation.
+Of course, the following does not work if daenim is not installed on your
+computer.</p>
+<div class="section" id="view-the-world">
+<h3>View the world<a class="headerlink" href="#view-the-world" title="Permalink to this headline">¶</a></h3>
+<p>The current world is shown with daenim, through the function <tt class="docutils literal"><span class="pre">view</span></tt> as follows</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.core</span> <span class="kn">import</span> <span class="n">World</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.robots</span> <span class="kn">import</span> <span class="n">simplearm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.visu.visu_collada</span> <span class="kn">import</span> <span class="n">write_collada_scene</span><span class="p">,</span> <span class="n">view</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simplearm</span><span class="o">.</span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="view-simulation">
+<h3>View simulation<a class="headerlink" href="#view-simulation" title="Permalink to this headline">¶</a></h3>
+<p>Arboris-python can update the daenim visualization by communicating with ports.
+The communication is possible through the observer <tt class="docutils literal"><span class="pre">DaenimCom</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.visu.visu_collada</span> <span class="kn">import</span> <span class="n">DaenimCom</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DaenimCom</span><span class="p">())</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">timeline</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you have already saved a collada scene file that represent the current world,
+it can be used in argument (the function above create a temporary collada file)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">write_collada_scene</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DaenimCom</span><span class="p">(</span><span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Be sure that the flat argument is the same.</p>
+</div>
+<div class="section" id="view-saved-collada-file-scene-animation">
+<h3>View saved collada file (scene &amp; animation)<a class="headerlink" href="#view-saved-collada-file-scene-animation" title="Permalink to this headline">¶</a></h3>
+<p>You can display a scene or replay an animation saved in a collada file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.visu.visu_collada</span> <span class="kn">import</span> <span class="n">view</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">(</span><span class="s">&quot;scene.dae&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">(</span><span class="s">&quot;anim.dae&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">(</span><span class="s">&quot;scene.dae&quot;</span><span class="p">,</span> <span class="s">&quot;sim.h5&quot;</span><span class="p">)</span>     <span class="c"># or &quot;sim.pkl&quot;</span>
+</pre></div>
+</div>
+<p>Note that you can directly call daenim in bash</p>
+<div class="highlight-bash"><div class="highlight"><pre>daenim scene.dae
+daenim anim.dae
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Visualization</a><ul>
+<li><a class="reference internal" href="#save-scene-and-animation-in-a-collada-file">Save scene and animation in a collada file</a><ul>
+<li><a class="reference internal" href="#save-world-in-collada-scene">Save world in collada scene</a></li>
+<li><a class="reference internal" href="#save-simulation-results-in-collada-animation">Save simulation results in collada animation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#visualize-with-daenim">Visualize with Daenim</a><ul>
+<li><a class="reference internal" href="#view-the-world">View the world</a></li>
+<li><a class="reference internal" href="#view-simulation">View simulation</a></li>
+<li><a class="reference internal" href="#view-saved-collada-file-scene-animation">View saved collada file (scene &amp; animation)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="collisions.html"
+                        title="previous chapter">Collisions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">Modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/visu.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="collisions.html" title="Collisions"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

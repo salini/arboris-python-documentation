@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to arboris-python’s documentation! &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="#" />
+    <link rel="next" title="Introduction" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-arboris-python-s-documentation">
+<h1>Welcome to arboris-python&#8217;s documentation!<a class="headerlink" href="#welcome-to-arboris-python-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#about-arboris">About Arboris</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-to-arboris-matlab">Comparison to arboris-matlab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#what-we-use">What we use...</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-on-ubuntu">Installation on Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#for-mac-os-10-6-snow-leopard">For Mac OS 10.6 (Snow Leopard)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#for-windows">For windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#first-contact-with-the-arboris-core-world">First contact with the <tt class="docutils literal"><span class="pre">arboris.core.World</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#a-dynamic-simulation">A dynamic simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#with-visualization">...with visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#using-a-controller">Using a controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#writing-a-controller">Writing a controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#adding-contacts">Adding contacts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigidmotion.html">Rigid Motion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#frames-and-rigid-bodies">Frames and rigid bodies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#position-of-a-coordinate-frame">Position of a coordinate frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#velocity-of-a-coordinate-frame">Velocity of a coordinate frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#wrenches">Wrenches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#acceleration-of-a-coordinate-frame">Acceleration of a coordinate frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#newton-euler-equations-for-a-rigid-body">Newton-Euler equations for a rigid body</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmotion.html#dynamics">Dynamics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigidmechanism.html">Rigid Mechanisms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rigidmechanism.html#ideal-joints">Ideal Joints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmechanism.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rigidmechanism.html#mechanisms">Mechanisms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Simulation loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#update-dynamic"><tt class="docutils literal"><span class="pre">update_dynamic()</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#update-controllers"><tt class="docutils literal"><span class="pre">update_controllers()</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#update-constraints"><tt class="docutils literal"><span class="pre">update_constraints()</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#integrate"><tt class="docutils literal"><span class="pre">integrate()</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dynamicalmodel.html">Computation of the dynamical model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dynamicalmodel.html#unactuated-free-model">Unactuated free model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamicalmodel.html#controllers-model">Controllers model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="controllers.html">Controllers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="controllers.html#proportional-derivative-controller">Proportional-derivative controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controllers.html#weight-controller">Weight controller</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="constraints.html">Constraints and contacts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html#gauss-seidel-algorithm">Gauss-Seidel algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html#constraints">Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="collisions.html">Collisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collisions.html#module-arboris.collisions">Collision computation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visu.html">Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visu.html#save-scene-and-animation-in-a-collada-file">Save scene and animation in a collada file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visu.html#visualize-with-daenim">Visualize with Daenim</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#core-the-core-of-the-simulator"><tt class="docutils literal"><span class="pre">core</span></tt> &#8211; The core of the simulator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.joints"><tt class="docutils literal"><span class="pre">joints</span></tt> - Concrete joint implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.observers"><tt class="docutils literal"><span class="pre">observers</span></tt> - Get world information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.shapes"><tt class="docutils literal"><span class="pre">shapes</span></tt> - For collision &amp; display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.robots.human36"><tt class="docutils literal"><span class="pre">human36</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.homogeneousmatrix"><tt class="docutils literal"><span class="pre">homogeneousmatrix</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.adjointmatrix"><tt class="docutils literal"><span class="pre">adjointmatrix</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.twistvector"><tt class="docutils literal"><span class="pre">twistvector</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-arboris.massmatrix"><tt class="docutils literal"><span class="pre">massmatrix</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notations.html">Notations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notations.html#a-notation-conversion-table">A notation conversion table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notations.html#some-formulas">Some formulas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notations.html#how-kdl-works">How KDL works</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devel.html#using-git">Using Git</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel.html#tests">Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel.html#using-pylint">Using pylint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel.html#building-the-documentation">Building the documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quirks.html">Quirks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quirks.html#python">Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quirks.html#numpy">Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quirks.html#arboris">Arboris</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to arboris-python&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="next chapter">Introduction</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >next</a> |</li>
+        <li><a href="#">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

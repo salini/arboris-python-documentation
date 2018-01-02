@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Rigid Mechanisms &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Simulation loop" href="simulation.html" />
+    <link rel="prev" title="Rigid Motion" href="rigidmotion.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="simulation.html" title="Simulation loop"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rigidmotion.html" title="Rigid Motion"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rigid-mechanisms">
+<h1>Rigid Mechanisms<a class="headerlink" href="#rigid-mechanisms" title="Permalink to this headline">¶</a></h1>
+<p>We define a rigid mechanism as a finite number of rigid bodies interconnected by ideal joints.</p>
+<div class="section" id="ideal-joints">
+<h2>Ideal Joints<a class="headerlink" href="#ideal-joints" title="Permalink to this headline">¶</a></h2>
+<p>An ideal joint is a kinematic restriction of the allowed relative twist of two rigid bodies <img class="math" src="_images/math/5a278ee8d2d56b6d5e37a8cd4bcb620e367e9525.png" alt="i"/> and <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/> to a linear subspace of dimension <img class="math" src="_images/math/6b1cc2aac7644207fd27b60cad838c2f3fbf256b.png" alt="k"/>, where the relative motion of the bodies is described by two sets of states, namely</p>
+<ul class="simple">
+<li>a matrix <img class="math" src="_images/math/9bd0e1c3f777885591f22c0cfc78fb002177152c.png" alt="\GPos"/>, parameterizing the relative configuration as <img class="math" src="_images/math/dff3e8ca35690a5f04b6977561f61f830f94c250.png" alt="\H_{01} = \H_{01}(\GPos)"/>,</li>
+<li>a vector <img class="math" src="_images/math/7e9aacb6bf19b58f521cb8d4976a01df83eeaa6b.png" alt="\GVel \in \Real{k}"/>, parameterizing the relative twist as <img class="math" src="_images/math/c2d83be615ad569074a33c70e0297e6d64cbe816.png" alt="\twist[1]_{1/0} = X(\GPos) \GVel"/></li>
+</ul>
+<p>where <img class="math" src="_images/math/87a35c730c591a0659cd2690916efe65e303344e.png" alt="X(\GPos)"/> depends smoothly on <img class="math" src="_images/math/9bd0e1c3f777885591f22c0cfc78fb002177152c.png" alt="\GPos"/> and <img class="math" src="_images/math/5b4bd7e007172f283e57485e1436b604438fb145.png" alt="\nu = V_\GPos(\dot{\GPos})"/> with <img class="math" src="_images/math/c48bd5070961e5ea41d550e3f3a8a115c1785d74.png" alt="V_\GPos"/> invertible and linear in <img class="math" src="_images/math/40cb6d2ac7484150bd5af84842832c09a8e5cde5.png" alt="\dot{\GPos}"/>. Furthermore, there exists a mapping <img class="math" src="_images/math/85e9d9e9cc3bdded489b3cbfe9074155dfff0df1.png" alt="F_\GPos : \Real{k} \rightarrow \GPosSet"/>.</p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>Several ideal joints are already implemented:</p>
+<ul class="simple">
+<li><tt class="xref py py-class docutils literal"><span class="pre">RzJoint</span></tt> for hinge joints,</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">RzRyJoint</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">RyRxJoint</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">RzRxJoint</span></tt> for cardan joints,</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">RzRyRxJoint</span></tt> for ball and socket joints,</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">FreeJoint</span></tt> for &#8220;free&#8221; joints, that do not constrain the relative motion.</li>
+</ul>
+<p>Let&#8217;s take the example of an hinge joint, it has 1 dof, and may be parametrized by the angle <img class="math" src="_images/math/a53aabbde5544d5e78223915ea9064f6e744d4cc.png" alt="q"/> and its derivative <img class="math" src="_images/math/27ef702abd8bf4ae8af71b0846e046858b88baea.png" alt="\dot{q}"/>. Here we create a joint, with angle of 60 degrees and rotational velocity of 2 radians per second.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">j</span> <span class="o">=</span> <span class="n">joints</span><span class="o">.</span><span class="n">RzJoint</span><span class="p">(</span><span class="n">gpos</span> <span class="o">=</span> <span class="mf">3.14</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">gvel</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">ndof</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">gpos</span>
+<span class="go">array([ 1.04666667])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">gvel</span>
+<span class="go">array([ 2.])</span>
+</pre></div>
+</div>
+<p>The relative configuration corresponding to this joint is defined by the homogeneous <img class="math" src="_images/math/70b53ef278243a404fdb805ad1c9dc0fda6b0572.png" alt="\H_{01}"/> is given by <tt class="docutils literal"><span class="pre">pose()</span></tt></p>
+<div class="math">
+<p><img src="_images/math/5a1681775b09a2024086ce64540104cabe5275e4.png" alt="\H_{rn} =
+\begin{bmatrix}
+cos(q) &amp; -sin(q) &amp; 0 &amp; 0\\
+sin(q) &amp;  cos(q) &amp; 0 &amp; 0\\
+0      &amp;  0      &amp; 1 &amp; 0\\
+0      &amp;  0      &amp; 0 &amp; 1
+\end{bmatrix}"/></p>
+</div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">pose</span>
+<span class="go">array([[ 0.50045969, -0.86575984,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.86575984,  0.50045969,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  1.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]])</span>
+</pre></div>
+</div>
+<p>Its inverse, <img class="math" src="_images/math/df2840080e12e13f036a158344b4e2dbddb02007.png" alt="\H_{10} = \H_{01}^{-1}"/> is given by <tt class="docutils literal"><span class="pre">ipose</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">ipose</span>
+<span class="go">array([[ 0.50045969,  0.86575984,  0.        ,  0.        ],</span>
+<span class="go">       [-0.86575984,  0.50045969,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  1.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]])</span>
+</pre></div>
+</div>
+<p>Similarly, the relative twist <img class="math" src="_images/math/28bc344cbd086174e29226298b680e75b7f94dbe.png" alt="\twist[1]_{1/0}"/> is given by <tt class="docutils literal"><span class="pre">twist</span></tt> and its inverse by <tt class="docutils literal"><span class="pre">itwist</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">twist</span>
+<span class="go">array([ 0.,  0.,  2.,  0.,  0.,  0.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">itwist</span>
+<span class="go">array([-0., -0., -2., -0., -0., -0.])</span>
+</pre></div>
+</div>
+<p>Eventually, the <img class="math" src="_images/math/87a35c730c591a0659cd2690916efe65e303344e.png" alt="X(\GPos)"/> matrix, which we (perhaps improperly) call
+jacobian, is given by <tt class="docutils literal"><span class="pre">jacobian</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">jacobian</span>
+<span class="go">array([[ 0.],</span>
+<span class="go">       [ 0.],</span>
+<span class="go">       [ 1.],</span>
+<span class="go">       [ 0.],</span>
+<span class="go">       [ 0.],</span>
+<span class="go">       [ 0.]])</span>
+</pre></div>
+</div>
+<p>One can notice that</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">all</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">twist</span> <span class="o">==</span> <span class="n">dot</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">jacobian</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">gvel</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>as expected.</p>
+</div>
+<div class="section" id="mechanisms">
+<h2>Mechanisms<a class="headerlink" href="#mechanisms" title="Permalink to this headline">¶</a></h2>
+<p>Joints an bodies are interconnected in a tree-like structure, whose nodes are the bodies and edges are the joints. More precisely, a joint is connected between two <em>frames</em>, each belonging to a different body.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Rigid Mechanisms</a><ul>
+<li><a class="reference internal" href="#ideal-joints">Ideal Joints</a></li>
+<li><a class="reference internal" href="#implementation">Implementation</a></li>
+<li><a class="reference internal" href="#mechanisms">Mechanisms</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rigidmotion.html"
+                        title="previous chapter">Rigid Motion</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="simulation.html"
+                        title="next chapter">Simulation loop</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rigidmechanism.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="simulation.html" title="Simulation loop"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rigidmotion.html" title="Rigid Motion"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

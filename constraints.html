@@ -1,0 +1,793 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Constraints and contacts &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Collisions" href="collisions.html" />
+    <link rel="prev" title="Controllers" href="controllers.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="collisions.html" title="Collisions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="controllers.html" title="Controllers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="constraints-and-contacts">
+<h1>Constraints and contacts<a class="headerlink" href="#constraints-and-contacts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="gauss-seidel-algorithm">
+<h2>Gauss-Seidel algorithm<a class="headerlink" href="#gauss-seidel-algorithm" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt>
+<tt class="descclassname">World.</tt><tt class="descname">update_constraints</tt><big>(</big><em>dt</em>, <em>maxiters=1000</em>, <em>tol=0.0001</em><big>)</big></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dt</strong> (<em>float</em>) &#8211; integration time</li>
+<li><strong>maxiters</strong> (<em>int</em>) &#8211; maximum number of iteration to find the proper constraint forces</li>
+<li><strong>tol</strong> (<em>float</em>) &#8211; convergence tolerance, corresponding to the norm(gvel_i - gvel_i-1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>In accordance with the integration scheme, we assume the following
+first order model between generalized velocities and generalized
+forces:</p>
+<div class="math">
+<p><img src="_images/math/2919bf941d5895a033d869aeeb453fc5e1d1cac8.png" alt="\GVel(t+dt) &amp;= Y(t)
+\left( \frac{M(t)}{dt} \GVel(t) + \GForce(t) \right)"/></p>
+</div><p>where:</p>
+<ul class="simple">
+<li>the admittance matrix  <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/> takes into account a
+first order model of the actuators,</li>
+<li>the actuators generalized forces <img class="math" src="_images/math/f114726d6bc9c0667b495dcd5e4d3be0da38be0d.png" alt="\GForce(t)"/>
+are assumed to be constant during the <img class="math" src="_images/math/dca874af37778dd884dda65a85f308933605926a.png" alt="[t , t+dt ]"/>
+time interval.</li>
+</ul>
+<p>This (constraint-free) model must be completed by constraints
+forces <img class="math" src="_images/math/12ba30c6ad0be9aea1e7a70ece4fad5db107b212.png" alt="\force[c]"/>, which are mapped to generalized forces
+by the constraint jacobian <img class="math" src="_images/math/f6cf289461b57d580c6fe402889d44bdffe42ddd.png" alt="\J[c]_c\tp"/>:</p>
+<div class="math">
+<p><img src="_images/math/205b12c5dd6dad3727ead45bdcece0f94ecb22b1.png" alt="\GVel(t+dt)
+&amp;= Y(t)
+\left( \frac{M(t)}{dt} \GVel(t) + \GForce(t)
+    + \sum_{c} \; \J[c]_{c}\tp(t) \; \force[c](t)
+\right)"/></p>
+</div><p>one can also define the constraint velocity  as:
+<img class="math" src="_images/math/10fe0aaf393dcf19a0b652381a1e21fcc63b1a40.png" alt="\vel[c] = \J[c]_c \; \GVel"/> so that:</p>
+<div class="math">
+<p><img src="_images/math/9ac639d260daf5988be39728711b7f4e8b320048.png" alt="\vel[c](t+dt)
+&amp;= \J[c]_c(t) \; \GVel(t+dt)\\
+&amp;= \J[c]_c(t) \; Y(t)
+\left(
+    \frac{M(t)}{dt} \GVel(t) + \; \GForce(t)
+\right)
++ \sum_d \; \J[c]_c(t) \; Y(t) \; \J[d]_d\tp(t)
+\; \force[d](t)"/></p>
+</div><p>one can define the (global) constraints velocity <img class="math" src="_images/math/214d260ef3d56720d6132a7797fce0a554cde3ad.png" alt="v'"/>,
+force <img class="math" src="_images/math/28b7ff90a6bcc9b1bb80efca4223e76c96ada1f3.png" alt="f'"/>, jacobian matrix <img class="math" src="_images/math/de2c5211a5f40f9cbc67a979966ef0e4d1a06110.png" alt="J'"/>
+and admittance matrix <img class="math" src="_images/math/6ac020b674f8e4585c4d7ebbe9efb3b7b760a52d.png" alt="Y'"/>:</p>
+<div class="math">
+<p><img src="_images/math/cd0c47b73384b905936935aaf4609f0bdeca2fd4.png" alt="v'(t) =
+\begin{bmatrix}
+    \vel[0](t)\\ \vdots \\ \vel[c](t) \\ \vdots
+\end{bmatrix}
+\hspace{50px}
+f'(t) =
+\begin{bmatrix}
+    \force[0](t)\\ \vdots \\ \force[c](t) \\ \vdots
+\end{bmatrix}
+\hspace{50px}
+J'(t) =
+\begin{bmatrix}
+    \J[0]_0(t)\\
+    \vdots\\
+    \J[c]_c(t)\\
+    \vdots
+\end{bmatrix}
+\hspace{50px}
+Y'(t) =
+J'(t) \; Y(t) \; J'(t)\tp"/></p>
+</div><p>and get a synthetic expression:</p>
+<div class="math">
+<p><img src="_images/math/bff3266da35f2c937ab0bef258efe9fc874d826f.png" alt="v'(t+dt) &amp;= J'(t) \; Y(t)
+\left( \frac{M(t)}{dt}  \GVel(t) + \GForce(t) \right)
++ Y'(t) \; f'"/></p>
+</div><p>This method computes the constraint forces in three steps:</p>
+<ul class="simple">
+<li>ask each active constraint object for its jacobian,</li>
+<li>compute <img class="math" src="_images/math/2d656e6ee7a0597efde9cd70b1497619730ff85d.png" alt="J"/>, <img class="math" src="_images/math/d5337b5d40c4a379cf8df8f0e3be0a4d1fa7ef1d.png" alt="v"/>  and <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/>,</li>
+<li>iterate over each constraint object in order to compute
+<img class="math" src="_images/math/12ba30c6ad0be9aea1e7a70ece4fad5db107b212.png" alt="\force[c]"/>. At each iteration the force is
+updated by <img class="math" src="_images/math/efcc6524ca0c22ffd1082771a0b309252364f22f.png" alt="\Delta\force[c]"/></li>
+<li>eventually add each active constraint generalized force to
+world <tt class="xref py py-attr docutils literal"><span class="pre">_gforce</span></tt> property.</li>
+</ul>
+<p>TODO: add an example.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="constraints">
+<h2>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/inheritance-fb59cf3b999e810c487ba574b1d290bbf249ee3d.png" alt="Inheritance diagram of arboris.constraints" usemap="#inheritancea8a4e304b8" class="inheritance"/>
+<map id="inheritancea8a4e304b8" name="inheritancea8a4e304b8">
+<area shape="rect" id="node1" href="#arboris.constraints.BallAndSocketConstraint" title="Create a ball and socket joint constraint between two frames." alt="" coords="329,3,545,21"/>
+<area shape="rect" id="node2" href="modules.html#arboris.core.Constraint" title="A generic class for kinematic constraint." alt="" coords="175,38,295,57"/>
+<area shape="rect" id="node3" href="#arboris.constraints.JointLimits" title="This class describes and solves joint limits constraints." alt="" coords="362,38,512,57"/>
+<area shape="rect" id="node4" href="#arboris.constraints.PointContact" title="Parent class for all point contacts." alt="" coords="356,74,518,92"/>
+<area shape="rect" id="node5" href="#arboris.constraints.SoftFingerContact" title="This class implements a *soft&#45;finger* point contact constraint." alt="" coords="580,74,764,92"/>
+<area shape="rect" id="node6" href="modules.html#arboris.core.NamedObject" title="A class for anything named to depend from." alt="" coords="4,38,140,57"/>
+</map>
+</p>
+<div class="section" id="kinematic-constraints">
+<h3>Kinematic Constraints<a class="headerlink" href="#kinematic-constraints" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="arboris.constraints.BallAndSocketConstraint">
+<em class="property">class </em><tt class="descclassname">arboris.constraints.</tt><tt class="descname">BallAndSocketConstraint</tt><big>(</big><em>frames</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#arboris.constraints.BallAndSocketConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a ball and socket joint constraint between two frames.</p>
+<p>This class describes and solves a ball and socket kinematic constraint
+between two frames which are rigidly fixed to two distinct bodies.</p>
+<p>Let&#8217;s denote 0 and 1 these two frames. The constraint can be expressed
+as a condition on their relative pose, requiring that the ball
+and socket centers be co-located:</p>
+<div class="math">
+<p><img src="_images/math/54f5a642b7802a3a3e8cb22f371312f70d583093.png" alt="H_{01} =
+\begin{bmatrix}
+    R_{01} &amp; 0\\
+    0      &amp; 1
+\end{bmatrix}
+\Leftrightarrow
+p_{01} = 0"/></p>
+</div><p>Solving the constraint means computing the right constraint force that will
+ensure that the kinematic condition will be met.</p>
+<p>Let&#8217;s define the constraint velocity <img class="math" src="_images/math/d5337b5d40c4a379cf8df8f0e3be0a4d1fa7ef1d.png" alt="v"/> and the constraint force
+<img class="math" src="_images/math/86170b4e080bd04dd408fe255c73c13fdfed6caf.png" alt="f"/> as</p>
+<div class="math">
+<p><img src="_images/math/2c6fe83c2dd3400b3bd34cd8d4319bedad93fc5d.png" alt="v &amp;= S \; \twist[0]_{1/0} = \dot{p}_{01} \\
+\wrench[0]_{0/1} &amp;= S\tp \; f  \\
+S &amp;=
+\begin{bmatrix}
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}"/></p>
+</div><p>The constraint jacobian is then given by
+<img class="math" src="_images/math/99271926470b0bb6df9483153c8cdd1f6d57ead6.png" alt="( \Ad_{01} \; \J[1]_{1/g} - \J[0]_{0/g} )"/></p>
+<p>In order to solve the constraint, an adjustement <img class="math" src="_images/math/f877abc4384ed1b9d71a74d9e6e545383cbaf1a3.png" alt="\Delta f"/> of the
+constraint force is computed by the <tt class="docutils literal"><span class="pre">solve</span></tt> method.
+This method is given as argument the current estimation of constraint
+velocity, which corresponds to <img class="math" src="_images/math/e02048f0d7154cbd708bda110f6cd63de4a60db1.png" alt="\Delta f = 0"/> and takes into account
+the coupling between the contraints.</p>
+<div class="math">
+<p><img src="_images/math/1268aa334076d81c9aa0bfbe5241dace37fea67c.png" alt="f^k(t)
+&amp;= f^{k-1}(t) + \Delta f\\
+v^k(t+dt)
+&amp;= v^*(t+dt) + Y(t) \Delta f  \\
+H_{01}^k(t+dt)
+&amp;= \exp( dt \; S\tp \; ( v^*(t+dt) + Y(t) \; \Delta f ) ) \;
+H_{01}(t)
+\\
+p_{01}^k(t+dt)
+&amp;= p_{01}(t) + dt \; (v^*(t+dt) +  Y(t) \; \Delta f)"/></p>
+</div><dl class="method">
+<dt id="arboris.constraints.BallAndSocketConstraint.solve">
+<tt class="descname">solve</tt><big>(</big><em>vel</em>, <em>admittance</em>, <em>dt</em><big>)</big><a class="headerlink" href="#arboris.constraints.BallAndSocketConstraint.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>from this equation</p>
+<div class="math">
+<p><img src="_images/math/2caf37073f4a8d3fc76b436f129d04eadcd0bead.png" alt="p_{01}^k(t+dt)
+ &amp;= p_{01}(t) + dt \; ( v^* +  Y \; \Delta f)"/></p>
+</div><p>given that we want <img class="math" src="_images/math/bfac17079d5db9805dfd7047b5d24b50f9bd6d6e.png" alt="p_{01}(t+dt) = 0"/>, we return</p>
+<div class="math">
+<p><img src="_images/math/7e26d17afb5c110a54c737b780f88016a18ed400.png" alt="\Delta f = -Y^{-1} \;
+\left(
+    \frac{p_{01}(t)}{dt} + v^*
+\right)"/></p>
+</div><p>and update the constraint force adjustment <img class="math" src="_images/math/f877abc4384ed1b9d71a74d9e6e545383cbaf1a3.png" alt="\Delta f"/></p>
+<p>The function arguments are</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">vel</span></tt>: <img class="math" src="_images/math/eb15d727cb898cad91565a9f0087f3074e8f82ff.png" alt="v^*"/></li>
+<li><tt class="docutils literal"><span class="pre">admittance</span></tt>: <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/></li>
+<li><tt class="docutils literal"><span class="pre">dt</span></tt>: <img class="math" src="_images/math/2cb5c8f38ca4551c11c5c8d05f7da21517be6d01.png" alt="dt"/></li>
+</ul>
+<p>Tests:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">BallAndSocketConstraint</span><span class="p">(</span><span class="n">frames</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">_pos0</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">_force</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vel</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adm</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dforce</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">adm</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">_pos0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span> <span class="n">vel</span> <span class="o">+</span> <span class="n">dot</span><span class="p">(</span><span class="n">adm</span><span class="p">,</span> <span class="n">dforce</span><span class="p">)</span> <span class="p">)</span>
+<span class="go">array([ 0.,  0.,  0.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vel</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dforce</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">adm</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">_pos0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span> <span class="n">vel</span> <span class="o">+</span> <span class="n">dot</span><span class="p">(</span><span class="n">adm</span><span class="p">,</span> <span class="n">dforce</span><span class="p">)</span> <span class="p">)</span>
+<span class="go">array([ 0.,  0.,  0.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="arboris.constraints.BallAndSocketConstraint.update">
+<tt class="descname">update</tt><big>(</big><em>dt</em><big>)</big><a class="headerlink" href="#arboris.constraints.BallAndSocketConstraint.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the predicted relative position error between the socket and
+ball centers, <img class="math" src="_images/math/c5b57272912503a5eb276dd1078f99c1d404a7c3.png" alt="p_{01}(t)"/> and save it in <tt class="docutils literal"><span class="pre">self._pos0</span></tt>.</p>
+<div class="math">
+<p><img src="_images/math/ffae8d023e60e7ab5d47a6aa5e9d8aa573a7f85a.png" alt="H_{01}(t)
+&amp;= \left(H_{g0}(t)\right)^{-1} \; H_{g1}(t) \\
+H_{01}(t)
+&amp;=
+\begin{bmatrix}
+R_{01}(t) &amp; p_{01}(t) \\
+0             &amp; 1
+\end{bmatrix}"/></p>
+</div></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="joint-limits">
+<h3>Joint limits<a class="headerlink" href="#joint-limits" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="arboris.constraints.JointLimits">
+<em class="property">class </em><tt class="descclassname">arboris.constraints.</tt><tt class="descname">JointLimits</tt><big>(</big><em>joint</em>, <em>min_limits</em>, <em>max_limits</em>, <em>proximity=None</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#arboris.constraints.JointLimits" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes and solves joint limits constraints.</p>
+<p>Let&#8217;s denote <img class="math" src="_images/math/a53aabbde5544d5e78223915ea9064f6e744d4cc.png" alt="q"/> the joint generalized position, and <img class="math" src="_images/math/1cbb4920edcfc30607422d69259f0edd9826011e.png" alt="m"/> and <img class="math" src="_images/math/de9779baa3bc51337ec7faa734ef1d70ec23767e.png" alt="M"/> the joint
+limits. This class purpose is to enforce the following constraint on <img class="math" src="_images/math/a53aabbde5544d5e78223915ea9064f6e744d4cc.png" alt="q"/></p>
+<div class="math">
+<p><img src="_images/math/6d68144cea02d048c3ad83fc7873b0a93c5203a9.png" alt="m \leq q \leq M"/></p>
+</div><p>through a generalized force <img class="math" src="_images/math/86170b4e080bd04dd408fe255c73c13fdfed6caf.png" alt="f"/>, while ensuring the Signorini
+conditions holds</p>
+<div class="math">
+<p><img src="_images/math/aab78108f75649b29036235aceed485bdad50136.png" alt="( 0 \leq q - m ) \perp ( f \geq 0 )  \\
+( 0 \geq q - M ) \perp ( f \leq 0 )"/></p>
+</div></dd></dl>
+
+</div>
+<div class="section" id="contacts">
+<h3>Contacts<a class="headerlink" href="#contacts" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">we do not deal with non-point contact</p>
+</div>
+<dl class="class">
+<dt id="arboris.constraints.PointContact">
+<em class="property">class </em><tt class="descclassname">arboris.constraints.</tt><tt class="descname">PointContact</tt><big>(</big><em>shapes</em>, <em>collision_solver</em>, <em>proximity</em>, <em>name</em><big>)</big><a class="headerlink" href="#arboris.constraints.PointContact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parent class for all point contacts.</p>
+<p>Solving a contact constraint involves two steps:</p>
+<ul class="simple">
+<li>the <tt class="docutils literal"><span class="pre">update</span></tt> method does the collision detection then updates
+the contacts frames,</li>
+<li>the <tt class="docutils literal"><span class="pre">solve</span></tt> method, called at each iteration of the
+Gauss-Seidel algorithm computes contact forces compatible
+with the contact model.</li>
+</ul>
+<p>The <a class="reference internal" href="#arboris.constraints.PointContact" title="arboris.constraints.PointContact"><tt class="xref py py-class docutils literal"><span class="pre">PointContact</span></tt></a> class implements the first step by calling a
+<tt class="docutils literal"><span class="pre">collision_solver</span></tt> function. Implementing the second one is the
+responsability of a daughter class.</p>
+<dl class="method">
+<dt id="arboris.constraints.PointContact.update">
+<tt class="descname">update</tt><big>(</big><em>dt</em><big>)</big><a class="headerlink" href="#arboris.constraints.PointContact.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method calls the collision solver and updates the constraint
+status and the contact frames poses accordingly.
+The two frames have the same orientation, with the contact normal along
+the <img class="math" src="_images/math/25cc1ccfa94614ab861653b3fee16018fd99804a.png" alt="z"/>-axis</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="arboris.constraints.SoftFingerContact">
+<em class="property">class </em><tt class="descclassname">arboris.constraints.</tt><tt class="descname">SoftFingerContact</tt><big>(</big><em>shapes</em>, <em>friction_coeff</em>, <em>collision_solver=None</em>, <em>proximity=0.02</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#arboris.constraints.SoftFingerContact" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class implements a <em>soft-finger</em> point contact constraint.</p>
+<p>Let&#8217;s consider two convex objects (shapes) and attach a frame to each of
+them in such a way that:</p>
+<blockquote>
+<div><ul class="simple">
+<li>their origin are chosen on the object surface, where the
+(signed) distance between the objects is minimal,</li>
+<li>the two frames are aligned,</li>
+<li>the normal to the object&#8217;s surface is along their z-axis.</li>
+</ul>
+</div></blockquote>
+<p>If we denote 0 and 1 the two frames, their coordinate
+change matrix has the following form:</p>
+<div class="math">
+<p><img src="_images/math/d159bc57654fe624af9b6395bd05eef94d2a3102.png" alt="H_{01} &amp;=
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; d \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}"/></p>
+</div><p>where <img class="math" src="_images/math/3185df18a224affab9b05961c8c5b3849128440c.png" alt="d"/> is the signed distance between the objects.
+If <img class="math" src="_images/math/4476f8eba1d7c8a298f873c48dfb198723e3fb71.png" alt="d = 0"/>, the objects are in contact, if <img class="math" src="_images/math/fa7c5da55cedda6297b461765e2e7638a082ba02.png" alt="d &lt; 0"/> they
+penetrate each other.</p>
+<p>We consider here point contacts with a Coulomb friction model,
+extended to involve torque resisting to torsion, as described in
+<a class="reference external" href="T.LiuandM.Y.Wang,“Computationofthreedimensionalrigidbodydynamicsofmultiplecontactsusingtime-steppingandGauss-Seidelmethod”,IEEETransactiononAutomationScienceandEngineering,submitted,November2003">Liu2003</a> and <a class="reference external" href="J.C.Trinkle,J.Tzitzoutis,andJ.S.Pang,&quot;DynamicMulti-Rigid-BodySystemswithConcurrentDistributedContacts:TheoryandExamples&quot;,PhilosophicalTrans.onMathematical,Physical,andEngineeringSciences,SeriesA,359(1789):2575-2593,December,2001">Trinkle2001</a> and often denoted as &#8220;soft finger
+contact&#8221;. The contact wrench can be decomposed as:</p>
+<div class="math">
+<p><img src="_images/math/4816659b1fbeb4ec708f2b343eb54948f9e5ad5e.png" alt="\wrench[0]_{0/1} &amp;=
+\begin{bmatrix}
+0 \\ 0 \\ m_z \\ f_x \\ f_y \\ f_z
+\end{bmatrix}"/></p>
+</div><p>The Signorini law (or complementarity condition) imposes conditions on
+the normal force (aka. pressure force):</p>
+<div class="math">
+<p><img src="_images/math/d897e45ace6ee1396ec115ad9419f0f911ed5c5c.png" alt="f_z &amp;\ge 0 \\
+d &amp;\ge 0 \\
+d \cdot f_z &amp;=0"/></p>
+</div><p>which are often summarized as <img class="math" src="_images/math/0c76baf25596a1971784c005bbcf545b4e3287eb.png" alt="0 \le d \perp f_z \ge 0"/>.</p>
+<p>TODO: check the contact rupture condition is good. (Duindam, in his phd,
+chose a very specific one).</p>
+<p>Additionnaly, the Coulomb law of friction with the elliptic friction
+model states that the contact is in static friction mode and only
+rolling motion occurs if <img class="math" src="_images/math/4476f8eba1d7c8a298f873c48dfb198723e3fb71.png" alt="d = 0"/> and:</p>
+<div class="math">
+<p><img src="_images/math/16361467533b521e922a119abbb1a920fa3adb7b.png" alt="\frac{m_z^2}{e_p^2} + \frac{f_x^2}{e_x^2} + \frac{f_y^2}{e_y^2}
+&amp;\le \mu^2 \cdot f_z^2"/></p>
+</div><p>where <img class="math" src="_images/math/4b2233eaf29a084289ab48fc3a47f803dba5a37e.png" alt="e_p"/>, <img class="math" src="_images/math/6ad1dcc76641bb365694c3ce3ec477045f505f23.png" alt="e_x"/>, <img class="math" src="_images/math/211ebd27a01749d4c177a2f55348bfe858ea8a8d.png" alt="e_y"/> are normalization coefficents
+and <img class="math" src="_images/math/5265dec4d19ac7a403a8090a6df3313275a7fcac.png" alt="\mu"/> is the coefficient of friction.
+In such a case, the contact relative twist has the form:</p>
+<div class="math">
+<p><img src="_images/math/eb5e36d1f7564ed7a04f9b84f2557ae2598ad812.png" alt="\twist[0]_{1/0} &amp;=
+\begin{bmatrix}
+\omega_x \\ \omega_y \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}"/></p>
+</div><p>Otherwise, the friction is said to be dynamic, and additionnal
+sliding and pivoting motions occur:</p>
+<div class="math">
+<p><img src="_images/math/5a2711e5a3c8ef8ffa815328e8080cdc50d510d3.png" alt="\twist[0]_{1/0} &amp;=
+\begin{bmatrix}
+\omega_x \\ \omega_y \\ \omega_z \\ v_x \\ v_y \\ 0
+\end{bmatrix}"/></p>
+</div><p>with:</p>
+<div class="math">
+<p><img src="_images/math/83b3b5f46fb78f6b3f58de01deb4703e1d9252a3.png" alt="\begin{bmatrix}
+\omega_z \\ v_x \\ v_y
+\end{bmatrix} = s
+\begin{bmatrix}
+\frac{m_z}{e_p^2} \\ \frac{f_x}{e_x^2} \\ \frac{f_y}{e_y^2}
+\end{bmatrix}
+\text{ and }
+s = -\frac{
+    \sqrt{e_p^2 \cdot \omega_z + e_x^2 \cdot v_x + e_y^2 \cdot v_y}}{
+    \mu \cdot f_z}"/></p>
+</div><p>and</p>
+<div class="math">
+<p><img src="_images/math/a982056140e4797960ecc56cd58f26d01c1b4c41.png" alt="\frac{m_z^2}{e_p^2} + \frac{f_x^2}{e_x^2} + \frac{f_y^2}{e_y^2}
+&amp;= \mu^2 \cdot f_z^2"/></p>
+</div><p>References:</p>
+<dl class="method">
+<dt id="arboris.constraints.SoftFingerContact.solve">
+<tt class="descname">solve</tt><big>(</big><em>vel</em>, <em>admittance</em>, <em>dt</em><big>)</big><a class="headerlink" href="#arboris.constraints.SoftFingerContact.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>We map:
+- <tt class="docutils literal"><span class="pre">vel</span></tt>: <img class="math" src="_images/math/eb15d727cb898cad91565a9f0087f3074e8f82ff.png" alt="v^*"/>
+- <tt class="docutils literal"><span class="pre">admittance</span></tt>: <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/>
+- <tt class="docutils literal"><span class="pre">dt</span></tt>: <img class="math" src="_images/math/2cb5c8f38ca4551c11c5c8d05f7da21517be6d01.png" alt="dt"/>
+- <tt class="docutils literal"><span class="pre">dforce</span></tt> : <img class="math" src="_images/math/f877abc4384ed1b9d71a74d9e6e545383cbaf1a3.png" alt="\Delta f"/></p>
+<p>Let&#8217;s define the constraint velocity</p>
+<div class="math">
+<p><img src="_images/math/9350cb995221da5497342c954852f5f880b34354.png" alt="v =
+\begin{bmatrix}
+    \omega_z \\ v_x \\ v_y \\ v_z
+\end{bmatrix}
+= S \; \twist[0]_{1/0}"/></p>
+</div><p>with</p>
+<div class="math">
+<p><img src="_images/math/a48867e848238dcf297bd5143c2f4ce0d87e01b7.png" alt="S &amp;=
+\begin{bmatrix}
+    0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}"/></p>
+</div><p>and the constraint force</p>
+<div class="math">
+<p><img src="_images/math/0516da7f04da6a12b90180e23226d462527a4e77.png" alt="f =
+\begin{bmatrix}
+    m_z \\ f_x \\ f_y \\ f_z
+\end{bmatrix}"/></p>
+</div><p>so that</p>
+<div class="math">
+<p><img src="_images/math/45aa5296b90c12753b4758223b74f464219497fe.png" alt="\wrench[0]_{0/1} = S\tp \; f"/></p>
+</div><p>at the <img class="math" src="_images/math/6b1cc2aac7644207fd27b60cad838c2f3fbf256b.png" alt="k"/>-iest iteration of the Gauss-Seidel algorithm, we have</p>
+<div class="math">
+<p><img src="_images/math/5faf2f104741d61a19f61e8c0f3aed50188baa3d.png" alt="f^k(t) &amp;= f^{k-1}(t) + \Delta f \\
+v^k(t+dt) &amp;= v^*(t+dt) + Y \; \Delta f \\
+d^k(t+dt) &amp;= d(t) + dt \cdot
+\begin{bmatrix}
+    0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\left( v^*(t+dt) + Y \; \Delta f \right)"/></p>
+</div><p>for static friction we&#8217;ll need</p>
+<div class="math">
+<p><img src="_images/math/2fc5d69a3a05606ec4bbbf53a1a30413b8042a7c.png" alt="d^k(t+dt) &amp;= 0"/></p>
+</div><p>and</p>
+<div class="math">
+<p><img src="_images/math/0c5c7064489e6f8815d482a3d102d2323ae3171b.png" alt="\begin{bmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0
+\end{bmatrix}
+v^k(t+dt)
+&amp;=
+\begin{bmatrix}
+    0 \\ 0 \\ 0
+\end{bmatrix}"/></p>
+</div><p>which leads to</p>
+<div class="math">
+<p><img src="_images/math/aff709f8e8f1d8e8c1a8686f65e4a436da25ee5b.png" alt="\Delta f &amp;= -Y^{-1}
+\left(
+v^*(t+dt) +
+\begin{bmatrix}
+    0 \\ 0 \\ 0 \\ \frac{d(t)}{dt}
+\end{bmatrix}
+\right)"/></p>
+</div><p>for dynamic friction, the condition on sliding velocity and contact
+persistance lead to</p>
+<div class="math">
+<p><img src="_images/math/c59d96ef79f915b3327feab68f504f98127bcc00.png" alt="v^k(t+dt)
+&amp;=
+s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+(f^{k-1}+\Delta f)
++
+\begin{bmatrix}
+0 \\ 0 \\ 0 \\ -\frac{d(t)}{dt}
+\end{bmatrix} \\
+\Leftrightarrow
+v^*(t+dt) + Y \Delta f
+&amp;=
+s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\left( f^{k-1}+\Delta f \right)
++
+\begin{bmatrix}
+0 \\ 0 \\ 0 \\ -\frac{d(t)}{dt}
+\end{bmatrix}"/></p>
+</div><p>Finally, we get</p>
+<div class="math">
+<p><img src="_images/math/1d675bfccd2344cd39a37adf89c472f4c044e0cb.png" alt="0 &amp;=
+\alpha + \left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)
+\left( f^{k-1}+\Delta f \right)"/></p>
+</div><p>and</p>
+<div class="math">
+<p><img src="_images/math/6805e936028578574462ab6e9673f4301b8a2d32.png" alt="\left( f^{k-1}+\Delta f \right)
+&amp;=
+- \left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)^{-1} \alpha"/></p>
+</div><p>while denoting</p>
+<div class="math">
+<p><img src="_images/math/446c48c8e254ea3d3309470c98b2b20e90a05fe3.png" alt="\alpha &amp;=
+v^*(t+dt) -
+\begin{bmatrix}
+0 \\ 0 \\ 0 \\ -\frac{d(t)}{dt}
+\end{bmatrix} - Y f^{k-1}"/></p>
+</div><p>Note that <img class="math" src="_images/math/5d85011339acc76999ddb28278a163643ca30cc2.png" alt="s"/> is still unknown. However,</p>
+<div class="math">
+<p><img src="_images/math/a982056140e4797960ecc56cd58f26d01c1b4c41.png" alt="\frac{m_z^2}{e_p^2} + \frac{f_x^2}{e_x^2} + \frac{f_y^2}{e_y^2}
+&amp;= \mu^2 \cdot f_z^2"/></p>
+</div><p>can be rewritten</p>
+<div class="math">
+<p><img src="_images/math/8f92b9ed2ec345ec83021972129266728068c6de.png" alt="\left( f^{k-1}+\Delta f \right)\tp
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; -\mu^2
+\end{bmatrix}
+\left( f^{k-1}+\Delta f \right)
+&amp;=0"/></p>
+</div><p>so that if we can find <img class="math" src="_images/math/5d85011339acc76999ddb28278a163643ca30cc2.png" alt="s"/> solution of</p>
+<div class="math">
+<p><img src="_images/math/ffe7a65310231546db6f062dfdd1ab9a1086c6d3.png" alt="\alpha\tp
+\left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)^{-T}
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; -\mu^2
+\end{bmatrix}
+\left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)^{-1} \alpha
+&amp;=0 \text{,}"/></p>
+</div><p>then we&#8217;re done.</p>
+<p>Let&#8217;s decompose <img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/>, using numpy notations, noticing that it is
+symmetric:</p>
+<div class="math">
+<p><img src="_images/math/b2d8f891c82f1bce841bd389e441c96c49f690f2.png" alt="Y &amp;=
+\begin{bmatrix}
+Y_{0:3,0:3} &amp; Y_{0:3,3} \\
+Y_{3,0:3}   &amp; Y_{3,3}
+\end{bmatrix}
+=
+\begin{bmatrix}
+Y_t   &amp; Y_c \\
+Y_c\tp &amp; y_n
+\end{bmatrix}"/></p>
+</div><p>It can then be block-diagonalized:</p>
+<div class="math">
+<p><img src="_images/math/b3c3b9b213782ae015beeff185946044c158b1db.png" alt="\left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)
+&amp;=
+\begin{bmatrix}
+Y_t - s
+    \begin{bmatrix}
+    \frac{1}{e_p^2} &amp; 0 &amp; 0 \\
+    0 &amp; \frac{1}{e_x^2} &amp; 0 \\
+    0 &amp; 0 &amp; \frac{1}{e_y^2}
+    \end{bmatrix}
+&amp; Y_c \\
+Y_c\tp &amp; y_n
+\end{bmatrix}
+\\
+&amp;=
+\begin{bmatrix}
+I_{3 \times 3} &amp; Y_c/y_n \\
+0_{1 \times 3} &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+Y_t - Y_c\;Y_c\tp/y_n - s
+    \begin{bmatrix}
+    \frac{1}{e_p^2} &amp; 0 &amp; 0 \\
+    0 &amp; \frac{1}{e_x^2} &amp; 0 \\
+    0 &amp; 0 &amp; \frac{1}{e_y^2}
+    \end{bmatrix}
+               &amp; 0_{3 \times 1} \\
+0_{1 \times 3} &amp; y_n
+\end{bmatrix}
+\begin{bmatrix}
+I_{3 \times 3} &amp;  0_{3 \times 1} \\
+Y_c\tp/y_n      &amp; 1
+\end{bmatrix}"/></p>
+</div><p>and its inverse</p>
+<div class="math">
+<p><img src="_images/math/07e3ee4471fd7e251d50831f48be4e8ef52798b1.png" alt="\left(
+Y - s
+\begin{bmatrix}
+\frac{1}{e_p^2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{1}{e_x^2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{1}{e_y^2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+\right)^{-1}
+&amp;=
+\begin{bmatrix}
+I_{3 \times 3}  &amp;  0_{3 \times 1} \\
+-Y_c\tp/y_n      &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+\left(Y_t - Y_c\;Y_c\tp/y_n - s
+    \begin{bmatrix}
+    \frac{1}{e_p^2} &amp; 0 &amp; 0 \\
+    0 &amp; \frac{1}{e_x^2} &amp; 0 \\
+    0 &amp; 0 &amp; \frac{1}{e_y^2}
+    \end{bmatrix}\right)^{-1}
+               &amp; 0_{3 \times 1} \\
+0_{1 \times 3} &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+I_{3 \times 3} &amp; -Y_c/y_n \\
+0_{1 \times 3} &amp; y_n^{-1}
+\end{bmatrix}"/></p>
+</div><p>injecting this last expression into, it can be shown that <img class="math" src="_images/math/5d85011339acc76999ddb28278a163643ca30cc2.png" alt="s"/> is
+an eigen value of the <img class="math" src="_images/math/86fd6bffe531e0c8a227b753ab804bdd9af8b329.png" alt="B"/> matrix</p>
+<div class="math">
+<p><img src="_images/math/9c0df850b361434010f30b2054b5ea70f2108b36.png" alt="B &amp;=
+\begin{bmatrix}
+    e_p^2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; e_x^2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; e_y^2 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; e_p^2 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; e_x^2 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; e_y^2
+\end{bmatrix}
+\begin{bmatrix}
+    Y_t - Y_c\;Y_c\tp/y_n + 2 \frac{\beta b\tp}{a}
+        &amp; -\frac{\beta \beta\tp}{a^2} \\
+    b b\tp -
+    \begin{bmatrix}
+        \frac{1}{e_p^2} &amp; 0 &amp; 0 \\
+        0 &amp; \frac{1}{e_x^2} &amp; 0 \\
+        0 &amp; 0 &amp; \frac{1}{e_y^2}
+    \end{bmatrix}
+        &amp; Y_t - Y_c\;Y_c\tp/y_n
+\end{bmatrix}"/></p>
+</div><p>where the following values have been introduced</p>
+<div class="math">
+<p><img src="_images/math/0418869a15758f60d886f4131af32806655d64e7.png" alt="\beta &amp;=
+\begin{bmatrix}
+    I_{3 \times 3} &amp; -Y_c/y_n \\
+    \end{bmatrix} \alpha \\
+a &amp;= \mu/y_n \alpha_3 \\
+b &amp;= \frac{\mu}{y_n} Y_c"/></p>
+</div><p><img class="math" src="_images/math/5d85011339acc76999ddb28278a163643ca30cc2.png" alt="s"/> should be real and negative (in order to ensure that the friction
+force opposes motion). If <img class="math" src="_images/math/86fd6bffe531e0c8a227b753ab804bdd9af8b329.png" alt="B"/> has several real negative eigen-values,
+we choose the smallest, which leads to the smaller friction forces.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">the full math is available as a pdf, within that document, <img class="math" src="_images/math/75e1ab95d31f2000209387369640868394ddff9a.png" alt="\beta"/>
+is denoted <img class="math" src="_images/math/1bba5eb474a2f2f2365d888f8115648e908d2991.png" alt="\hat{\alpha}"/>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="arboris.constraints.SoftFingerContact.update">
+<tt class="descname">update</tt><big>(</big><em>dt</em><big>)</big><a class="headerlink" href="#arboris.constraints.SoftFingerContact.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method calls the collision solver and updates the constraint
+status and the contact frames poses accordingly.
+The two frames have the same orientation, with the contact normal along
+the <img class="math" src="_images/math/25cc1ccfa94614ab861653b3fee16018fd99804a.png" alt="z"/>-axis</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Constraints and contacts</a><ul>
+<li><a class="reference internal" href="#gauss-seidel-algorithm">Gauss-Seidel algorithm</a></li>
+<li><a class="reference internal" href="#constraints">Constraints</a><ul>
+<li><a class="reference internal" href="#kinematic-constraints">Kinematic Constraints</a></li>
+<li><a class="reference internal" href="#joint-limits">Joint limits</a></li>
+<li><a class="reference internal" href="#contacts">Contacts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="controllers.html"
+                        title="previous chapter">Controllers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="collisions.html"
+                        title="next chapter">Collisions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/constraints.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="collisions.html" title="Collisions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="controllers.html" title="Controllers"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

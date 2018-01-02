@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Controllers &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Constraints and contacts" href="constraints.html" />
+    <link rel="prev" title="Computation of the dynamical model" href="dynamicalmodel.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="constraints.html" title="Constraints and contacts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dynamicalmodel.html" title="Computation of the dynamical model"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="controllers">
+<h1>Controllers<a class="headerlink" href="#controllers" title="Permalink to this headline">¶</a></h1>
+<p>TODO: document the controller API</p>
+<div class="section" id="proportional-derivative-controller">
+<h2>Proportional-derivative controller<a class="headerlink" href="#proportional-derivative-controller" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="arboris.controllers.ProportionalDerivativeController">
+<em class="property">class </em><tt class="descclassname">arboris.controllers.</tt><tt class="descname">ProportionalDerivativeController</tt><big>(</big><em>joints</em>, <em>kp=None</em>, <em>kd=None</em>, <em>gpos_des=None</em>, <em>gvel_des=None</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#arboris.controllers.ProportionalDerivativeController" title="Permalink to this definition">¶</a></dt>
+<dd><p>A proportional-derivative controller.</p>
+<p>A <img class="math" src="_images/math/37472d05b0c3d7e0a7f1aa2ff4a51837145b672c.png" alt="n"/>-dimensional PD controller which delivers a torque <img class="math" src="_images/math/5f3e5b4229f6032fd4f5c120113629089f07c3e4.png" alt="\torque"/>:</p>
+<div class="math">
+<p><img src="_images/math/852e227e681a2e1910b79e6f572939379539dd61.png" alt="\torque(t) &amp;= K_p (\q_d - \q(t+\dt)) + K_d (\dq_d - \dq(t+\dt))"/></p>
+</div><p>where <img class="math" src="_images/math/a9d8518093780ed2e195ac0769bb4cfe7fafad5f.png" alt="\q_d"/> and <img class="math" src="_images/math/01f7d52ae311c1b070d984f61e8fab6618bf1d39.png" alt="\dq_d"/> are the respectively the desired position
+and velocity and where <img class="math" src="_images/math/e9497c0ce3a2cbf865071eb1764ad7c34f9376ff.png" alt="\torque(t)"/> is assumed constant on the <img class="math" src="_images/math/22aa3420f8b65ad4c6dc9e0c305c451cd65da8d1.png" alt="[t,t+dt]"/>
+interval.</p>
+<p>Here</p>
+<div class="math">
+<p><img src="_images/math/4ecdcef26d8ce9289643f304074a5c3098861d70.png" alt="\q(t+\dt) = \q(t) + \dq(t+\dt) \dt"/></p>
+</div><p>so</p>
+<div class="math">
+<p><img src="_images/math/2b86c2194887fa1b55562d91adc94fe2e6364834.png" alt="\torque(t) &amp;= K_p (\q_d  - (\q(t) + \dq(t+\dt) \dt ) )
+            + K_d (\dq_d - \dq(t+\dt)) \\
+           &amp;= K_p (\q_d - \q(t))
+            + K_d \dq_d - (K_p \dt + K_d)\dq(t+\dt) \\
+           &amp;= \torque_0(t) + Z(t) \dq(t+\dt)"/></p>
+</div><p>with</p>
+<div class="math">
+<p><img src="_images/math/298e0d6f5a3443618a75ef757ed717f23980494c.png" alt="\torque_0(t) &amp;= K_p (\q_d - q(t)) + K_d \dq_d \\
+        Z(t) &amp;= -(K_p \dt + K_d)"/></p>
+</div><p><img class="math" src="_images/math/b014855ae36043d592c40f908da87ac712ef248a.png" alt="\torque_0(t)"/> can be denoted as the <strong>reactive part</strong> of the control,
+while <img class="math" src="_images/math/04e59dd17e0c5092fedda2a58fc0ac6f845bb3ad.png" alt="Z(t) \dq(t+\dt)"/> can be considered as the <strong>proactive part</strong> which
+depends on the future generalized velocity <img class="math" src="_images/math/995bfa3ab22f35576ac894b5f7e3aaf43771a275.png" alt="\dq(t+\dt)"/> (after integration).</p>
+<p><img class="math" src="_images/math/c639b659e89adfb57e54ad527fe595c1f1dba349.png" alt="Z"/> is denoted the impedance of the controller.</p>
+<p>Track an error with a proportional-derivative controller.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>joints</strong> (<em>iterable</em>) &#8211; a list of <a class="reference internal" href="modules.html#arboris.core.LinearConfigurationSpaceJoint" title="arboris.core.LinearConfigurationSpaceJoint"><tt class="xref py py-class docutils literal"><span class="pre">LinearConfigurationSpaceJoint</span></tt></a> one wants to control (<strong>x</strong> is the total dimension of the controlled joints)</li>
+<li><strong>kp</strong> (<em>(x,x)-array</em>) &#8211; the proportional gains</li>
+<li><strong>kd</strong> (<em>(x,x)-array</em>) &#8211; the derivative gains</li>
+<li><strong>gpos_des</strong> (<em>(x,)-array</em>) &#8211; desired generalized position</li>
+<li><strong>gvel_des</strong> (<em>(x,)-array</em>) &#8211; desired generalized velocity</li>
+<li><strong>name</strong> &#8211; the name of the controller</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="weight-controller">
+<h2>Weight controller<a class="headerlink" href="#weight-controller" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="arboris.controllers.WeightController">
+<em class="property">class </em><tt class="descclassname">arboris.controllers.</tt><tt class="descname">WeightController</tt><big>(</big><em>gravity=-9.81</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#arboris.controllers.WeightController" title="Permalink to this definition">¶</a></dt>
+<dd><p>A contoller which applies weight to joints.</p>
+<p><strong>Test:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.core</span> <span class="kn">import</span> <span class="n">simplearm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">simplearm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getjoints</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Shoulder&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Elbow&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    <span class="o">=</span> <span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Wrist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    <span class="o">=</span> <span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">WeightController</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_dynamic</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">gforce</span><span class="p">,</span> <span class="n">impedance</span><span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Simulate gravity along the world up axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gravity</strong> (<em>float</em>) &#8211; the gravity magnitude along world up axis (can be negative)</li>
+<li><strong>name</strong> (<em>string or None</em>) &#8211; the name of the controller</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Controllers</a><ul>
+<li><a class="reference internal" href="#proportional-derivative-controller">Proportional-derivative controller</a></li>
+<li><a class="reference internal" href="#weight-controller">Weight controller</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dynamicalmodel.html"
+                        title="previous chapter">Computation of the dynamical model</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="constraints.html"
+                        title="next chapter">Constraints and contacts</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/controllers.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="constraints.html" title="Constraints and contacts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dynamicalmodel.html" title="Computation of the dynamical model"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

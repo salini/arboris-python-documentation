@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Install" href="install.html" />
+    <link rel="prev" title="Welcome to arboris-python’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Install"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to arboris-python’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-arboris">
+<h2>About Arboris<a class="headerlink" href="#about-arboris" title="Permalink to this headline">¶</a></h2>
+<p>Arboris is a rigid body dynamics and contacts simulator written in python.</p>
+<p>Arboris includes a generic and easily extensible set of joints
+(singularity-free multi-dof joints, non-honolomic joints, etc.) which are
+used to model open rigid mechanisms with a minimal set of state variables.</p>
+<p>The dynamics of these systems are computed in a form similar to the
+Boltzmann-Hamel equations.</p>
+<p>Using time-stepping and a semi-implicit Euler integration scheme, a first-order
+approximation of the model is also computed. This allows for additional
+constraints such as contacts and kinematic loops to be solved using a
+Gauss-Seidel algorithm.</p>
+<p>Arboris is mostly useful for robotic applications and human motion studies.
+The python language makes it particularly suited for fast-paced development
+(prototyping) and education.</p>
+</div>
+<div class="section" id="background">
+<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>In 2005, Alain Micaelli, a researcher from CEA LIST, wrote a first version of
+the simulator in the matlab language. It was an implementation (and often an
+extension) of the algorithms described in <a class="reference internal" href="#park2005" id="id1">[Park2005]</a>, <a class="reference internal" href="#murray1994" id="id2">[Murray1994]</a> and
+<a class="reference internal" href="#liu2003" id="id3">[Liu2003]</a>.
+He was later joined by Sébastien Barthélemy, from ISIR/UPMC, who reorganized
+the code to take advantage of the early object-oriented features of matlab.
+It eventually became clear that the language was ill-designed, and that a full
+rewrite was necessary. With the help of Joseph Salini, also from ISIR/UPMC,
+Arboris-python was born. The resulting framework is now quite similar to what
+is presented in <a class="reference internal" href="#duindam2006" id="id4">[Duindam2006]</a>.</p>
+<p>The matlab version of the simulator is now deprecated.</p>
+<table class="docutils citation" frame="void" id="murray1994" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Murray1994]</a></td><td>Richard M. Murray, Zexiang Li and S. Shankar Sastry,
+&#8220;A  Mathematical Introduction to Robotic Manipulation&#8221;,
+CRC Press, 1994.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="park2005" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Park2005]</a></td><td>Jonghoon Park,
+&#8220;Principle of Dynamical Balance for Multibody Systems&#8221;,
+Multibody System Dynamics, vol. 14, number 3-4, pp. 269-299, 2005.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="liu2003" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Liu2003]</a></td><td>T. Liu and M. Y. Wang,
+&#8220;Computation of three dimensional rigid body dynamics of
+multiple contacts using time-stepping and Gauss-Seidel
+method&#8221;,
+IEEE Transaction on Automation Science and Engineering,
+submitted, November 2003.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="duindam2006" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Duindam2006]</a></td><td>V. Duindam,
+&#8220;Port-Based Modelling and Control for Efficent Bipedal Walking Robots&#8221;,
+University of Twente, 2006.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="comparison-to-arboris-matlab">
+<h2>Comparison to arboris-matlab<a class="headerlink" href="#comparison-to-arboris-matlab" title="Permalink to this headline">¶</a></h2>
+<p>I believe this version of arboris, written in python, is much better
+than the one written in matlab, and I&#8217;ll try here to explain why.</p>
+<ul class="simple">
+<li>python is better than matlab for what we do<ul>
+<li>arboris-matlab is written in the first (pre r2008a) matlab
+objet-oriented language, which is a really bad language.
+So bad that an entire book has been written about various
+tricks to circumvent its flaws (serious flaws as: no reference,
+no namespace, everything-is-matrix-philosophy-but-not-always, arrays
+cannot be subclassed...).
+I do think that if the matlab version is to be kept, it
+should be rewritten in the new matlab object-oriented
+language.</li>
+<li>python is cheaper than matlab,</li>
+<li>python has lots useful development tools such as docutils, doctest,
+sphinx. (Well, matlab has an integrated debugger which python still
+misses).</li>
+<li>More good (free) libraries are available for python than for matlab
+(in particular thanks to <a class="reference external" href="http://www.swig.org">swig</a>,
+<a class="reference external" href="http://www.sagemath.org">sage</a>).
+(Matlab has really good toolboxes too, but the price tag is not the
+same).</li>
+<li>Python, as a scripting language, is embedded in blender and maya, which
+opens up great visualisation possibilities.</li>
+<li>its easier to wrap C/C++ code to python than to matlab.</li>
+</ul>
+</li>
+<li>arboris-python design is better, because it has been written from the
+ground up, keeping the good ideas from the matlab version, but not the
+historical mess of code. Here are some more specific reasons:<ul>
+<li>the tree of bodies and joints is described in a tree datastructure, not
+as a combination of serial chains.</li>
+<li>generic joints handling is better. It know possible to have planar models,
+anchored robots and singularity-free ball and socket joints.</li>
+<li>the visualisation is clearly separated from the core.</li>
+<li>the controllers model is first order, without modifying the whole
+robot/world.</li>
+<li>the simulation is faster, because the design is better and because
+in arboris-python we do not integrate a second time after the
+constraints computation.</li>
+</ul>
+</li>
+<li>misc<ul>
+<li>the arboris-python version has a much better documentation.</li>
+<li>there is no more <tt class="docutils literal"><span class="pre">error('coucou')</span></tt> messages</li>
+<li>the arboris-python version has automated unit tests.</li>
+</ul>
+</li>
+</ul>
+<p>There are still areas where arboris-python is behind:</p>
+<ul class="simple">
+<li>python as no integrated debugger,</li>
+<li>fewer collisions are implemented (it&#8217;s easy to fix),</li>
+<li>fewer contact models are implemented (it&#8217;s not hard to fix),</li>
+<li>there is no visco-elastic constraint,</li>
+<li>there is no kinematic (or 0-degree) robot,</li>
+<li>the python version has been less tested by real users,</li>
+<li>the python version has no gui to set the posture.</li>
+<li>there is no more <tt class="docutils literal"><span class="pre">error('coucou')</span></tt> messages</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#about-arboris">About Arboris</a></li>
+<li><a class="reference internal" href="#background">Background</a></li>
+<li><a class="reference internal" href="#comparison-to-arboris-matlab">Comparison to arboris-matlab</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to arboris-python&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Install</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Install"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to arboris-python’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Computation of the dynamical model &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Controllers" href="controllers.html" />
+    <link rel="prev" title="Simulation loop" href="simulation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controllers.html" title="Controllers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="simulation.html" title="Simulation loop"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="computation-of-the-dynamical-model">
+<h1>Computation of the dynamical model<a class="headerlink" href="#computation-of-the-dynamical-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="unactuated-free-model">
+<h2>Unactuated free model<a class="headerlink" href="#unactuated-free-model" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt>
+<tt class="descclassname">World.</tt><tt class="descname">update_dynamic</tt><big>(</big><big>)</big></dt>
+<dd><p>Compute the forward geometric, kinematic and dynamic models.</p>
+<p>Recursively update each body pose, jacobian, djacobian, twist
+and nleffects attributes (thanks to the
+<a class="reference internal" href="modules.html#arboris.core.Body.update_dynamic" title="arboris.core.Body.update_dynamic"><tt class="xref py py-meth docutils literal"><span class="pre">arboris.core.Body.update_dynamic()</span></tt></a> method) and then update
+the world mass, viscosity and nleffects attributes.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">simplearm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_dynamic</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Algorithm:</strong></p>
+<p>The (world) generalized mass, viscosity and nleffect matrices
+respectively denoted <img class="math" src="_images/math/de9779baa3bc51337ec7faa734ef1d70ec23767e.png" alt="M"/>, <img class="math" src="_images/math/86fd6bffe531e0c8a227b753ab804bdd9af8b329.png" alt="B"/> and <img class="math" src="_images/math/cf5191c791a7e5961ca555d5b77c55db0f219110.png" alt="N"/> are computed from each body
+<img class="math" src="_images/math/d5a28a80cbbc63e6935bff634aef049fab9dfbaf.png" alt="b"/> jacobian <img class="math" src="_images/math/27223ff7bed8ecdb8e92f99ef4467542c6ae9768.png" alt="\J[b]_{b/g}"/>, hessian <img class="math" src="_images/math/aadba67599a0d7cfbe2d036c8bb84c329b331077.png" alt="\dJ[b]_{b/g}"/>, mass <img class="math" src="_images/math/c62c758d3e98f929019dc209c6644893c7df16ac.png" alt="M_b"/>,
+viscosity <img class="math" src="_images/math/716d37854e0783804159cfb45798f4ee4b76f2e4.png" alt="B_b"/> and nleffects <img class="math" src="_images/math/1730f1e617b1301c4d0d0a949405bf254490d377.png" alt="N_b"/> matrices as :</p>
+<div class="math">
+<p><img src="_images/math/e382306a6b2d88847d77b1ba661e7ebb976bd855.png" alt="M &amp;= \sum_b \J[b]_{b/g}\tp \; M_b \; \J[b]_{b/g} \\
+B &amp;= \sum_b \J[b]_{b/g}\tp \; B_b \; \J[b]_{b/g} \\
+N &amp;= \sum_b \J[b]_{b/g}\tp
+\left( M_b \; \dJ[b]_{b/g} + N_b \; \J[b]_{b/g}\right)"/></p>
+</div><p>If there is no additional constraint (such as contacts) nor actuation
+involved, the resulting (free) model is then:</p>
+<div class="math">
+<p><img src="_images/math/f710c7ba5d89a4a5fe7b5001711c2c168409a21d.png" alt="M \dGVel + \left( N + B \right) \GVel = 0"/></p>
+</div></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Body.</tt><tt class="descname">update_dynamic</tt><big>(</big><em>pose</em>, <em>jac</em>, <em>djac</em>, <em>twist</em><big>)</big></dt>
+<dd><p>Compute the body <tt class="docutils literal"><span class="pre">pose,</span> <span class="pre">jac,</span> <span class="pre">djac,</span> <span class="pre">twist</span></tt> and its children ones.</p>
+<p>This method (1) sets the body dynamical model (pose, jacobian,
+hessian and twist) to the values given as argument, (2) computes
+the dynamical model of the children bodies and (3) call the
+equivalent method on them.</p>
+<p>As a result, the dynamical model of all the bodies is computed
+recursively.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pose</strong> (<em>4x4 ndarray</em>) &#8211; the body pose relative to the ground: <img class="math" src="_images/math/8d85b5771c56c88a07e79519a5ec1f4109b56200.png" alt="H_{gb}"/></li>
+<li><strong>jac</strong> (<em>6x(ndof) ndarray</em>) &#8211; the body jacobian relative to the world (in body frame):
+<img class="math" src="_images/math/27223ff7bed8ecdb8e92f99ef4467542c6ae9768.png" alt="\J[b]_{b/g}"/></li>
+<li><strong>djac</strong> &#8211; the derivative of the body jacobian: <img class="math" src="_images/math/aadba67599a0d7cfbe2d036c8bb84c329b331077.png" alt="\dJ[b]_{b/g}"/></li>
+<li><strong>twist</strong> (<em>6 ndarray</em>) &#8211; the body twist: <img class="math" src="_images/math/fdfcc620ca0a43700f9987d6b4eda54d0f60b49f.png" alt="\twist[b]_{b/g}"/></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Algorithm:</strong></p>
+<p>Let&#8217;s define the following notations:</p>
+<ul class="simple">
+<li><img class="math" src="_images/math/8359c7a441a40d56b1598d67a0390aa3394e6bc4.png" alt="g"/>: the ground body,</li>
+<li><img class="math" src="_images/math/9f5f8a23e4a542a0ec82c58299fe25f342af47fe.png" alt="p"/>: the parent body (which is the present <tt class="xref py py-class docutils literal"><span class="pre">arboris.Body</span></tt>
+instance)</li>
+<li><img class="math" src="_images/math/e9b342a5f4d78887f98017548d07e7e08c8591b7.png" alt="c"/>: a child body,</li>
+<li><img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/>: the joint between the bodies <img class="math" src="_images/math/9f5f8a23e4a542a0ec82c58299fe25f342af47fe.png" alt="p"/> and <img class="math" src="_images/math/e9b342a5f4d78887f98017548d07e7e08c8591b7.png" alt="c"/>,</li>
+<li><img class="math" src="_images/math/54b306b84bd72563394127b55350e478bb5b06f7.png" alt="r"/>: reference frame of the joint <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/>, rigidly fixed to the parent
+body</li>
+<li><img class="math" src="_images/math/37472d05b0c3d7e0a7f1aa2ff4a51837145b672c.png" alt="n"/>: new frame of the joint <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/>, rigidly fixed to the child body</li>
+</ul>
+<a class="reference internal image-reference" href="_images/body_model.svg"><img src="_images/body_model.svg" width="300px" /></a>
+<p>One can notice that <img class="math" src="_images/math/8ed793e21efcf7ad4457075743fcf04b5f20aff8.png" alt="H_{nc}"/> and <img class="math" src="_images/math/01ff735c44a26bebece29ac1e8a1628c6634a3ca.png" alt="H_{pr}"/> are constant.</p>
+<p>The child body pose can be computed as</p>
+<div class="math">
+<p><img src="_images/math/c1556c0dfc4712b4218bf28a095416b57e9d2ec3.png" alt="H_{gc} &amp;= H_{gp} \; H_{pc} \\
+       &amp;= H_{gp} \; (H_{pr} \; H_{rn} \; H_{nc})"/></p>
+</div><p>where <img class="math" src="_images/math/cad6e21838e75c941519920779a98d1aa842e0f7.png" alt="H_{rn}"/> depends on the joint generalized configuration and is
+given by its <tt class="xref py py-attr docutils literal"><span class="pre">pose</span></tt> attribute.</p>
+<p>The chil body twist is given as</p>
+<div class="math">
+<p><img src="_images/math/ef7b1a4a44add963d301fd6d1def2a734269eb80.png" alt="\twist[c]_{c/g} &amp;= \Ad_{cp} \; \twist[p]_{p/g} + \twist[c]_{c/p} \\
+&amp;= \Ad_{cp} \; \twist[p]_{p/g} + \Ad_{cn} \; \twist[n]_{n/r} \\
+&amp;= \Ad_{cp} \; \J[p]_{p/g} \; \GVel
+   + \Ad_{cn} \; \J[n]_{n/r} \; \GVel_j \\
+&amp;= \J[c]_{c/g} \; \GVel"/></p>
+</div><p>where  <img class="math" src="_images/math/06410c86a2edb076bb271a085dbd92c2fe611096.png" alt="\twist[n]_{n/r}"/> is given by the joint
+<a class="reference internal" href="modules.html#arboris.core.Joint.twist" title="arboris.core.Joint.twist"><tt class="xref py py-attr docutils literal"><span class="pre">twist</span></tt></a> attribute.
+<img class="math" src="_images/math/7866270daba7ae6ee73aa40f934cf9ea88ff647b.png" alt="\GVel_j"/> is the generalized velocity of the joint <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/> and is
+related to the world generalized velocity by trivial projection</p>
+<div class="math">
+<p><img src="_images/math/442cbd18d629c4cb33b19396e40ab13cbe49b125.png" alt="\GVel_j &amp;=
+    \begin{bmatrix}
+        0 &amp; \cdots &amp;0 &amp; I &amp; 0 &amp; \cdots &amp; 0
+    \end{bmatrix} \; \GVel"/></p>
+</div><p>therefore, the child body jacobian is</p>
+<div class="math">
+<p><img src="_images/math/016c119af2f2bd605fec3c24c0a729eecbe15617.png" alt="\J[c]_{c/g} &amp;= \Ad_{cp} \; \J[p]_{p/g} +
+\begin{bmatrix}
+0 &amp; \cdots &amp; 0 &amp; \Ad_{cn} \; \J[n]_{n/r} &amp; 0 &amp; \cdots &amp; 0
+\end{bmatrix} \\"/></p>
+</div><p>where <img class="math" src="_images/math/91e89d6e0bb58d1b696269e4b21a1694848f42da.png" alt="\J[n]_{n/r}"/> is given by the joint
+<a class="reference internal" href="modules.html#arboris.core.Joint.jacobian" title="arboris.core.Joint.jacobian"><tt class="xref py py-attr docutils literal"><span class="pre">jacobian</span></tt></a> attribute. Derivating the previous
+expression leads to the child body acceleration:</p>
+<div class="math">
+<p><img src="_images/math/1ab0623ea511cf877f81aa63e6a1e299d224c2c5.png" alt="\dtwist[c]_{c/g} &amp;= \dAd_{cp} \; \J[p]_{p/g} \; \GVel
++ \Ad_{cp} \; \dJ[p]_{p/g} \; \GVel
++ \Ad_{cp} \; \J[p]_g \; \dGVel
++ \Ad_{cn} \; \dJ[n]_{n/r} \; \GVel_j
++ \Ad_{cn} \; \J[n]_{m/r} \dGVel_j \\
+&amp;= \J[c]_{c/g} \; \dGVel + \dJ[c]_{c/g} \; \GVel"/></p>
+</div><p>the expression of the child body hessian is then obtained by
+identification:</p>
+<div class="math">
+<p><img src="_images/math/1bf627bcff49da5651f8c0cf29d33a3c3c225009.png" alt="\dJ[c]_{c/g} \; \GVel
+&amp;= \dAd_{cp} \; \J[p]_{p/g}  \; \GVel
++  \Ad_{cp}  \; \dJ[p]_{p/g} \; \GVel
++  \Ad_{cn}  \; \dJ[n]_{n/r} \; \GVel_j \\
+
+\dJ[c]_{c/g}
+&amp;= \dAd_{cp} \; \J[p]_{p/g} + \Ad_{cp} \; \dJ[p]_{p/g} +
+\begin{bmatrix}
+0 &amp; \cdots &amp; 0 &amp; (\Ad_{cn} \; \dJ[n]_{n/r}) &amp; 0 &amp; \cdots &amp; 0
+\end{bmatrix}"/></p>
+</div><p>with</p>
+<div class="math">
+<p><img src="_images/math/556fd658cd8323edf81dd23f21a1433a26acfbd6.png" alt="\dAd_{cp} &amp;= \Ad_{cn} \; \dAd_{nr} \; \Ad_{rp}"/></p>
+</div><p>and where <img class="math" src="_images/math/fd1cec5816f1e0078ffb847c96a6675f4896e5d0.png" alt="\dAd_{nr}"/> and <img class="math" src="_images/math/09477574fe0e49809561043f9f482cc7632dbef4.png" alt="\dJ[n]_{n/r}"/> are respectively given by
+the joint <tt class="xref py py-attr docutils literal"><span class="pre">idadjoint</span></tt> and
+<a class="reference internal" href="modules.html#arboris.core.Joint.djacobian" title="arboris.core.Joint.djacobian"><tt class="xref py py-attr docutils literal"><span class="pre">djacobian</span></tt></a> attributes.</p>
+<p>T_ab: velocity of {a} relative to {b} expressed in {a} (body twist)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="controllers-model">
+<h2>Controllers model<a class="headerlink" href="#controllers-model" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt>
+<tt class="descclassname">World.</tt><tt class="descname">update_controllers</tt><big>(</big><em>dt</em><big>)</big></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dt</strong> (<em>float</em>) &#8211; integration time</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">simplearm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.controllers</span> <span class="kn">import</span> <span class="n">ProportionalDerivativeController</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getjoints</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a0</span> <span class="o">=</span> <span class="n">ProportionalDerivativeController</span><span class="p">(</span><span class="n">joints</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="mf">2.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">a0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_dynamic</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_controllers</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">_impedance</span>
+<span class="go">array([[ 686.98833333,  223.44666667,   20.67333333],</span>
+<span class="go">       [ 223.44666667,   93.44866667,   10.67333333],</span>
+<span class="go">       [  20.67333333,   10.67333333,    2.67333333]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">_admittance</span>
+<span class="go">array([[ 0.00732382, -0.0203006 ,  0.0244142 ],</span>
+<span class="go">       [-0.0203006 ,  0.07594182, -0.14621124],</span>
+<span class="go">       [ 0.0244142 , -0.14621124,  0.76901683]])</span>
+</pre></div>
+</div>
+<p><strong>Algorithm:</strong></p>
+<p>Let&#8217;s consider the following discretized 2nd-order model:</p>
+<div class="math">
+<p><img src="_images/math/15c27986e4cb3137ff770632e9d7764586b3acee.png" alt="M(t) \dGVel(t+dt) + \left( N(t)+B(t) )\right) \GVel(t+dt) &amp;=
+\GForce(t)"/></p>
+</div><p>considering</p>
+<div class="math">
+<p><img src="_images/math/2cb6db75060c58e70ff21314f2592e7e1a985ada.png" alt="\dGVel(t+dt) = \frac{\GVel(t+dt) - \GVel(t)}{dt}"/></p>
+</div><p>we get</p>
+<div class="math">
+<p><img src="_images/math/58ed52bab158f02d9999643d75e887afa58a4557.png" alt="\left( \frac{M(t)}{dt}+N(t)+B(t) \right) \GVel(t+dt) &amp;=
+\frac{M(t)}{dt} \GVel(t) + \GForce(t)"/></p>
+</div><p>Here <img class="math" src="_images/math/f114726d6bc9c0667b495dcd5e4d3be0da38be0d.png" alt="\GForce(t)"/> sums up the generalized forces due to
+all the active controllers and constraints.</p>
+<p>The generalized force due to a controller has the following form:</p>
+<div class="math">
+<p><img src="_images/math/c7e3a367980bfb4aba630998e3210d6f5c600525.png" alt="\GForce_a(t) &amp;= \GForce_{0a}(t) + Z_a(t) \GVel(t+td)"/></p>
+</div><p>where <img class="math" src="_images/math/1337aeaa7f54e82917bebc9d8764a81dd728581a.png" alt="\GForce_{0a}(t)"/> is constant during the
+<img class="math" src="_images/math/73e7e47b5c0e107c5442018660601bf17ebb8d72.png" alt="[t, t+dt]"/> period of time.</p>
+<p>It leads us to</p>
+<div class="math">
+<p><img src="_images/math/e6ad48276a5072ee6a68d27b4adc469054e0b6a8.png" alt="\left( \frac{M(t)}{dt}+N(t)+B(t) -\sum_a Z_a(t) \right)
+\GVel(t+dt) &amp;=
+\frac{M(t)}{dt} \GVel(t) + \sum_a \GForce_{0a}(t)"/></p>
+</div><p>One can the define impedance (<img class="math" src="_images/math/c639b659e89adfb57e54ad527fe595c1f1dba349.png" alt="Z"/>) and admittance (<img class="math" src="_images/math/4f77f50452cb590d810313bacf612beec3e8daa9.png" alt="Y"/>)
+matrices:</p>
+<div class="math">
+<p><img src="_images/math/0dcff428f65a840a35769fdc1e6759f9500f4774.png" alt="Z(t) &amp;= \frac{M(t)}{dt}+N(t)+B(t)-\sum_a Z_a(t) \\
+Y(t) &amp;= Z^{-1}(t)"/></p>
+</div><p>TODO: check the two last tests results!</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Computation of the dynamical model</a><ul>
+<li><a class="reference internal" href="#unactuated-free-model">Unactuated free model</a></li>
+<li><a class="reference internal" href="#controllers-model">Controllers model</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="simulation.html"
+                        title="previous chapter">Simulation loop</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="controllers.html"
+                        title="next chapter">Controllers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/dynamicalmodel.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controllers.html" title="Controllers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="simulation.html" title="Simulation loop"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

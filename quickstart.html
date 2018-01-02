@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick start &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Rigid Motion" href="rigidmotion.html" />
+    <link rel="prev" title="Install" href="install.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rigidmotion.html" title="Rigid Motion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Install"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>A world consists of</p>
+<ul class="simple">
+<li>rigid bodies interconnected by ideal joints in a tree topology,</li>
+<li>controllers generating generalized forces at joint level,</li>
+<li>additional constraints such as contacts or kinematic joints.</li>
+</ul>
+<div class="section" id="first-contact-with-the-arboris-core-world">
+<h2>First contact with the <a class="reference internal" href="modules.html#arboris.core.World" title="arboris.core.World"><tt class="xref py py-class docutils literal"><span class="pre">arboris.core.World</span></tt></a><a class="headerlink" href="#first-contact-with-the-arboris-core-world" title="Permalink to this headline">¶</a></h2>
+<p>First, let&#8217;s create a world <tt class="docutils literal"><span class="pre">w</span></tt>, which will consist of bodies and
+joints which form a simple planar arm model, plus the &#8220;ground&#8221; body.
+That world has 3 degrees of freedom.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">ndof</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>One can get a list of the bodies <a class="footnote-reference" href="#id2" id="id1">[1]</a> :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bodies</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getbodies</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getjoints</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bodies</span><span class="p">[</span><span class="s">&#39;Forearm&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6, 6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Elbow&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span>
+<span class="go">array([ 0.])</span>
+</pre></div>
+</div>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>this is not a raw python list, but an instance of
+<a class="reference internal" href="modules.html#arboris.core.NamedObjectsList" title="arboris.core.NamedObjectsList"><tt class="xref py py-class docutils literal"><span class="pre">arboris.core.NamedObjectsList</span></tt></a> which allows to index elements
+by the object name in addition to integers.</td></tr>
+</tbody>
+</table>
+<p>Once the forward geometric model is computed, bodies poses can be queried</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_geometric</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bodies</span><span class="p">[</span><span class="s">&#39;Hand&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span>
+<span class="go">array([[ 1. ,  0. ,  0. ,  0. ],</span>
+<span class="go">       [ 0. ,  1. ,  0. ,  0.9],</span>
+<span class="go">       [ 0. ,  0. ,  1. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  1. ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Elbow&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_geometric</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bodies</span><span class="p">[</span><span class="s">&#39;Hand&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span>
+<span class="go">array([[ 0. , -1. ,  0. , -0.4],</span>
+<span class="go">       [ 1. ,  0. ,  0. ,  0.5],</span>
+<span class="go">       [ 0. ,  0. ,  1. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  1. ]])</span>
+</pre></div>
+</div>
+<p>Each body defines a frame, yet additionnal frames are often defined. They are
+called &#8220;subframes&#8221; in arboris. A python dictionnary of all the
+frames (body frames + subframes) can also be obtained.</p>
+<p>Here, in addition to the hand, we consider its extremity. The third
+dactylion subframe is rigidly attached to the left hand, with the relative
+pose given by the <tt class="docutils literal"><span class="pre">bpose</span></tt> property.&#8221;</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span> <span class="o">=</span>  <span class="n">w</span><span class="o">.</span><span class="n">getframes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span> <span class="c"># pose relative to the ground</span>
+<span class="go">array([[ 0. , -1. ,  0. , -0.6],</span>
+<span class="go">       [ 1. ,  0. ,  0. ,  0.5],</span>
+<span class="go">       [ 0. ,  0. ,  1. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  1. ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">name</span> <span class="c"># parent body</span>
+<span class="go">&#39;Hand&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bpose</span> <span class="c"># pose relative to the parent body (constant)</span>
+<span class="go">array([[ 1. ,  0. ,  0. ,  0. ],</span>
+<span class="go">       [ 0. ,  1. ,  0. ,  0.2],</span>
+<span class="go">       [ 0. ,  0. ,  1. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  1. ]])</span>
+</pre></div>
+</div>
+<p>In addition to the forward geometric model, the full kinematic and
+dynamical models can be computed by the <tt class="docutils literal"><span class="pre">update_dynamic()</span></tt>
+method.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">lengths</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getjoints</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Shoulder&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Elbow&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Wrist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span><span class="p">[</span><span class="s">&#39;Wrist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gvel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">18</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">update_dynamic</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getframes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">twist</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">twist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">twist</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jacobian</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">jacobian</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jacobian</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">twist</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">jacobian</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">gvel</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(3, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">viscosity</span>
+<span class="go">array([[ 0.,  0.,  0.],</span>
+<span class="go">       [ 0.,  0.,  0.],</span>
+<span class="go">       [ 0.,  0.,  0.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">nleffects</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(3, 3)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-dynamic-simulation">
+<h2>A dynamic simulation<a class="headerlink" href="#a-dynamic-simulation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">lengths</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timeline</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">timeline</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="with-visualization">
+<h2>...with visualization<a class="headerlink" href="#with-visualization" title="Permalink to this headline">¶</a></h2>
+<p>To get informations about the world, we can add
+<a class="reference internal" href="modules.html#arboris.core.Observer" title="arboris.core.Observer"><tt class="xref py py-class docutils literal"><span class="pre">arboris.core.Observer</span></tt></a> to the simulation.
+One of these observers displays the evolution of the world while simulation
+is running, and another saves the trajectory of the frames for later viewing.
+See <a class="reference internal" href="visu.html"><em>Visualization</em></a> for more details.</p>
+</div>
+<div class="section" id="using-a-controller">
+<h2>Using a controller<a class="headerlink" href="#using-a-controller" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arange</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.controllers</span> <span class="kn">import</span> <span class="n">ProportionalDerivativeController</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">joints</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getjoints</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ProportionalDerivativeController</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">joints</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">gpos_des</span><span class="o">=</span><span class="p">(</span><span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span><span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span><span class="mf">3.14</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">kp</span><span class="o">=</span><span class="n">diag</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="n">kd</span><span class="o">=</span><span class="n">diag</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">))</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timeline</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e-2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">timeline</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-a-controller">
+<h2>Writing a controller<a class="headerlink" href="#writing-a-controller" title="Permalink to this headline">¶</a></h2>
+<p>Arboris-python allows the control of the system through the derivation of
+the abstract class <a class="reference internal" href="modules.html#arboris.core.Controller" title="arboris.core.Controller"><tt class="xref py py-class docutils literal"><span class="pre">arboris.core.Controller</span></tt></a>.
+A minimalist subclass which does nothing, can be written as follows</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">arboris.core</span> <span class="kn">import</span> <span class="n">Controller</span>     <span class="c"># basic Controller class</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span>
+
+<span class="k">class</span> <span class="nc">MinimalistController</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>                    <span class="c"># save arguments here</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="n">world</span>      <span class="c"># get pointers related to the world and initialize</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>       <span class="c"># dt is the simulation time step</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">ndof</span>
+        <span class="n">gforce</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>       <span class="c"># generalized force generated by the controller</span>
+        <span class="n">imp</span>    <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>   <span class="c"># the &#39;impedance&#39; generated by the controller</span>
+        <span class="k">return</span> <span class="n">gforce</span><span class="p">,</span> <span class="n">imp</span>
+</pre></div>
+</div>
+<p>There are three mandatory methods.
+The first one, <tt class="docutils literal"><span class="pre">__init__</span></tt>, is the class constructor and may have several
+user-defined arguments, the second one, <tt class="docutils literal"><span class="pre">init</span></tt>, initializes the controller
+relative to the <tt class="docutils literal"><span class="pre">world</span></tt> instance with fixed arguments,
+and the third one, <tt class="docutils literal"><span class="pre">update</span></tt>, is the main function which updates
+the input generalized force, again with fixed arguments.</p>
+</div>
+<div class="section" id="adding-contacts">
+<h2>Adding contacts<a class="headerlink" href="#adding-contacts" title="Permalink to this headline">¶</a></h2>
+<p>Contacts are subclass of <a class="reference internal" href="modules.html#arboris.core.Constraint" title="arboris.core.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">arboris.core.Constraint</span></tt></a> subclass in
+Arboris-python. They have to be registered as every elements of the world.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arange</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.constraints</span> <span class="kn">import</span> <span class="n">SoftFingerContact</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">arboris.shapes</span> <span class="kn">import</span> <span class="n">Plane</span><span class="p">,</span> <span class="n">Sphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">World</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_simplearm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frames</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getframes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh1</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s">&#39;EndEffector&#39;</span><span class="p">],</span> <span class="n">radius</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;eeSphere&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh2</span> <span class="o">=</span> <span class="n">Plane</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">ground</span><span class="p">,</span> <span class="n">coeffs</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;floor&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sh1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sh2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">contact</span> <span class="o">=</span> <span class="n">SoftFingerContact</span><span class="p">(</span> <span class="p">(</span><span class="n">sh1</span><span class="p">,</span> <span class="n">sh2</span><span class="p">),</span> <span class="o">.</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">timeline</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mo">01</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">timeline</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick start</a><ul>
+<li><a class="reference internal" href="#first-contact-with-the-arboris-core-world">First contact with the <tt class="docutils literal"><span class="pre">arboris.core.World</span></tt></a></li>
+<li><a class="reference internal" href="#a-dynamic-simulation">A dynamic simulation</a></li>
+<li><a class="reference internal" href="#with-visualization">...with visualization</a></li>
+<li><a class="reference internal" href="#using-a-controller">Using a controller</a></li>
+<li><a class="reference internal" href="#writing-a-controller">Writing a controller</a></li>
+<li><a class="reference internal" href="#adding-contacts">Adding contacts</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Install</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="rigidmotion.html"
+                        title="next chapter">Rigid Motion</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/quickstart.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rigidmotion.html" title="Rigid Motion"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Install"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

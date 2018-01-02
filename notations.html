@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Notations &mdash; arboris-python 0.2.0-28-gd9f91f4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0-28-gd9f91f4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="arboris-python 0.2.0-28-gd9f91f4 documentation" href="index.html" />
+    <link rel="next" title="Development" href="devel.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="devel.html" title="Development"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="notations">
+<h1>Notations<a class="headerlink" href="#notations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-notation-conversion-table">
+<h2>A notation conversion table<a class="headerlink" href="#a-notation-conversion-table" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">arboris-python</th>
+<th class="head">stramigioli icra2001</th>
+<th class="head">duindam 2006</th>
+<th class="head">murray, li &amp; sastry</th>
+<th class="head">KDL (cf frames.hpp)</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img class="math" src="_images/math/bb854bf529a4fc4e8e8f844dea3b8867914877df.png" alt="\H_{ij}"/></td>
+<td><img class="math" src="_images/math/7662e93893da351d366bd656308b827715fbd6db.png" alt="H^i_j"/></td>
+<td><img class="math" src="_images/math/7662e93893da351d366bd656308b827715fbd6db.png" alt="H^i_j"/></td>
+<td><img class="math" src="_images/math/6e7dff3f31d708be153c301a688e1108beb78f35.png" alt="g_{ij}"/></td>
+<td>F_A_B</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="_images/math/db1bb799ecf52fee3001461b2784bd48cb4f1842.png" alt="\twist[k]_{j/i}"/></td>
+<td><img class="math" src="_images/math/ace018f15e4c038458eef77f533f7aa49acd12d2.png" alt="T^{k,i}_j"/> (p24)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>T</td>
+<td>twist of <img class="math" src="_images/math/89012980a84606dec5992ff96430bd89035d07c3.png" alt="j"/> with respect to <img class="math" src="_images/math/5a278ee8d2d56b6d5e37a8cd4bcb620e367e9525.png" alt="i"/> expressed in <img class="math" src="_images/math/6b1cc2aac7644207fd27b60cad838c2f3fbf256b.png" alt="k"/></td>
+</tr>
+<tr class="row-even"><td><img class="math" src="_images/math/2aeee5d10510ba8550eef775f72369af8d2d6d40.png" alt="\twist[j]_{j/i}"/></td>
+<td><img class="math" src="_images/math/eb304f1156ef3ea07e0f9c24d73513912fae91cc.png" alt="T^{j,i}_j"/></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>body twist</td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="_images/math/78df5665b0c7eff6011fe7967a84c0d688b9be91.png" alt="\twist[i]_{j/i}"/></td>
+<td><img class="math" src="_images/math/9d56ea3533cd888872e929cf474e5fc1e84f1c8f.png" alt="T^{i,i}_j"/></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>W
+R
+V_A</td>
+<td>&#8220;world&#8221; twist
+wrench
+rotation
+vector expressed in A</td>
+</tr>
+<tr class="row-even"><td><img class="math" src="_images/math/687ec98e74efe61184781aca9d42745ed61896e4.png" alt="\Ad_{ij}"/></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><img class="math" src="_images/math/305910a0d7def3403cb5d177a423139141ef8601.png" alt="\text{Ad}_{g_{ij}}"/></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="32%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">documentation</th>
+<th class="head">latex</th>
+<th class="head">sourcecode</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img class="math" src="_images/math/bb854bf529a4fc4e8e8f844dea3b8867914877df.png" alt="\H_{ij}"/></td>
+<td><tt class="docutils literal"><span class="pre">\H_{ij}</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">H_ij</span></tt></td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="_images/math/687ec98e74efe61184781aca9d42745ed61896e4.png" alt="\Ad_{ij}"/></td>
+<td><tt class="docutils literal"><span class="pre">\Ad_{ij}</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">Ad_ij</span></tt></td>
+</tr>
+<tr class="row-even"><td><img class="math" src="_images/math/2aeee5d10510ba8550eef775f72369af8d2d6d40.png" alt="\twist[j]_{j/i}"/></td>
+<td><tt class="docutils literal"><span class="pre">\twist[j]_{j/i}</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">T_ji</span></tt></td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="_images/math/842a8cc5a4e496a54067a9077e38538006939a56.png" alt="\J[j]_{j/i}"/></td>
+<td><tt class="docutils literal"><span class="pre">\J[j]_{j/i}</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">J_ji</span></tt></td>
+</tr>
+<tr class="row-even"><td><img class="math" src="_images/math/f7c8434308c19b6b2dd9fec65e726b499bf6842e.png" alt="\dJ[j]_{j/i}"/></td>
+<td><tt class="docutils literal"><span class="pre">\dJ[j]_{j/i}</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">dJ_ji</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="some-formulas">
+<h2>Some formulas<a class="headerlink" href="#some-formulas" title="Permalink to this headline">¶</a></h2>
+<div class="math">
+<p><img src="_images/math/3edaa8980335a8594c495375b908610550bd286f.png" alt="\H_{ij}(t) &amp;= \exp(t \twist[j]_{j/i}) \; \H_{ij}(0) \\
+           &amp;= \H_{ij}(0) \exp(t \twist[i]_{j/i})"/></p>
+</div></div>
+<div class="section" id="how-kdl-works">
+<h2>How KDL works<a class="headerlink" href="#how-kdl-works" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">Twist</span></tt> class::</dt>
+<dd>twist.rot
+twist.vel</dd>
+<dt><tt class="docutils literal"><span class="pre">Wrench</span></tt> class::</dt>
+<dd>wrench.force
+wrench.forque</dd>
+</dl>
+<p><tt class="docutils literal"><span class="pre">twist(i)</span></tt> returns <tt class="docutils literal"><span class="pre">hcat(vel,</span> <span class="pre">rot)[i]</span></tt> and <tt class="docutils literal"><span class="pre">wrench(i)</span></tt> returns <tt class="docutils literal"><span class="pre">hcat(force,</span> <span class="pre">torque)[i]</span></tt></p>
+<p>a frame object contains a rotation matrix <img class="math" src="_images/math/9431de52f4db3df60f0329bc3e23eb57917882fe.png" alt="frame.M"/> and an origin vector <img class="math" src="_images/math/0388a1f96b401d8ac8885d568a81c84689f28565.png" alt="frame.p"/>.
+The <tt class="docutils literal"><span class="pre">*</span></tt> is overload, in order to works as expected with vectors points, twists, wrenches
+and other frames.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Notations</a><ul>
+<li><a class="reference internal" href="#a-notation-conversion-table">A notation conversion table</a></li>
+<li><a class="reference internal" href="#some-formulas">Some formulas</a></li>
+<li><a class="reference internal" href="#how-kdl-works">How KDL works</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="devel.html"
+                        title="next chapter">Development</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/notations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="devel.html" title="Development"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">arboris-python 0.2.0-28-gd9f91f4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, Sebastien BARTHELEMY.
+      Last updated on Jan 02, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

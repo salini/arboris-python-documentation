@@ -1,0 +1,18 @@
+<map id="inheritance75bede9c9e" name="inheritance75bede9c9e">
+<area shape="rect" id="node1" href="#arboris.core.Body" title="arboris.core.Body" alt="" coords="290,194,419,218"/>
+<area shape="rect" id="node2" href="#arboris.core.NamedObject" title="A class for anything named to depend from." alt="" coords="25,336,208,360"/>
+<area shape="rect" id="node4" href="#arboris.core.Constraint" title="A generic class for kinematic constraint." alt="" coords="274,241,435,266"/>
+<area shape="rect" id="node5" href="#arboris.core.Controller" title="arboris.core.Controller" alt="" coords="276,289,433,313"/>
+<area shape="rect" id="node7" href="#arboris.core.Joint" title="A generic class for ideal joints." alt="" coords="292,478,417,502"/>
+<area shape="rect" id="node13" href="#arboris.core.Observer" title="arboris.core.Observer" alt="" coords="278,336,431,360"/>
+<area shape="rect" id="node14" href="#arboris.core.Shape" title="A generic class for geometric shapes used in collision detection." alt="" coords="286,383,423,408"/>
+<area shape="rect" id="node16" href="#arboris.core.World" title="arboris.core.World" alt="" coords="289,431,420,455"/>
+<area shape="rect" id="node3" href="#arboris.core.Frame" title="A generic class for frames." alt="" coords="48,194,185,218"/>
+<area shape="rect" id="node6" href="#arboris.core.DuplicateNameError" title="arboris.core.DuplicateNameError" alt="" coords="5,147,228,171"/>
+<area shape="rect" id="node11" href="#arboris.core.LinearConfigurationSpaceJoint" title="Joints whose configuration space is diffeomorph to `\Real{ndof}`." alt="" coords="481,478,763,502"/>
+<area shape="rect" id="node8" title="Model a rigid motion, including relative pose and velocity" alt="" coords="12,478,221,502"/>
+<area shape="rect" id="node9" href="#arboris.core.JointsList" title="arboris.core.JointsList" alt="" coords="278,99,431,124"/>
+<area shape="rect" id="node10" href="#arboris.core.NamedObjectsList" title="A list of (possibly) NamedObjects." alt="" coords="12,99,221,124"/>
+<area shape="rect" id="node12" href="#arboris.core.MovingSubFrame" title="arboris.core.MovingSubFrame" alt="" coords="15,52,218,76"/>
+<area shape="rect" id="node15" href="#arboris.core.SubFrame" title="arboris.core.SubFrame" alt="" coords="36,4,196,29"/>
+</map>
